@@ -1,0 +1,29 @@
+{
+  apps : [
+    {
+      name       : "blockchainbox-core",
+      script     : "./bin/www",
+      watch      : true,
+      env: {
+        "NODE_ENV": "development",
+        "ENODE_BASE"        : "http://localhost:8545",
+        "POSTGRESQL_HOST"   : "localhost",
+        "POSTGRESQL_PORT"   : 5432,
+        "KAFKA_HOST"        : "localhost",
+        "KAFKA_PORT"        : 9092
+      }
+    },{
+      name       : "blockchainbox-core-contract-consumer",
+      script     : "./schedulers/aws/sqsContractConsumer.js",
+      watch       : true,
+      env: {
+        "NODE_ENV": "development",
+        "ENODE_BASE"        : "http://localhost:8545",
+        "POSTGRESQL_HOST"   : "localhost",
+        "POSTGRESQL_PORT"   : 5432,
+        "KAFKA_HOST"        : "localhost",
+        "KAFKA_PORT"        : 9092
+      }
+    }
+  ]
+}
