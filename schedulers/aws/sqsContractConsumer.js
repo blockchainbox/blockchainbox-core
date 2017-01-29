@@ -22,11 +22,12 @@ var consumer = Consumer.create({
       if (result.rowCount > 0) {
         var contractAbi = JSON.parse(result.rows[0].abi);
         var contractInstance = web3.eth.contract(contractAbi);
-        var contractByteCode = result.rows[0].bytecode;
+        var contractByteCode = '0x' + result.rows[0].bytecode;
+        var gasEstimate = web3.eth.estimateGas({data: contractByteCode});
         contractInstance.new({
           from: web3.eth.coinbase,
-          data: '0x' + contractByteCode,  // TODO need confirm why this need '0x', and check contract is availble for use
-          gas: 4700000
+          data: contractByteCode,  // TODO need confirm why this need '0x', and check contract is availble for use
+          gas: gasEstimate
         }, function(err, instance){
           if (!err && typeof instance.address !== 'undefined') {
             var entity = {

@@ -7,10 +7,15 @@ var contract = require('../models/contract.js');
 var contractFunction = require('../models/contractFunction.js');
 var contractEvent = require('../models/contractEvent.js');
 var ethereumController = require('../controllers/ethereumController.js');
+var sqsHelper = require('../helpers/aws/sqsHelper.js');
 var web3 = new Web3();
 var router = express.Router();
 
 web3.setProvider(new web3.providers.HttpProvider(process.env.ENODE_BASE || 'http://localhost:8545'));
+
+var PENDING = 'pending';
+var EARLIEST = 'earliest';
+var LATEST = 'lastest';
 
 /**
  * GET web3 compilers
@@ -51,28 +56,30 @@ router.get('/v1/contract', function (req, res, next) {
  */
 router.put('/v1/contract', function (req, res, next) {
     if (req.body.sourceCode != null && req.body.sourceCode != '') {
-        // var result = web3.eth.compile.solidity(req.body.sourceCode);
-        var result = solc.compile(req.body.sourceCode, 1);
-        console.log(result);
+    	var sourceCode = req.body.sourceCode;
+        var result = solc.compile(sourceCode, 1);
         var id = [];
         for (var contractName in result.contracts) {
-            var abi = result.contracts[contractName].interface;
+        	var abi = result.contracts[contractName].interface;
             var contractEntity = {
                 name: contractName, 
-                sourceCode: req.body.sourceCode,
+                sourceCode: sourceCode,
                 byteCode: result.contracts[contractName].bytecode,
                 language: result.contracts[contractName].metadata.language,
                 compilerVersion: result.contracts[contractName].metadata.compiler,
                 abi: abi,
                 // have to check [solc]
-                gasEstimates: web3.eth.estimateGas({data: result.contracts[contractName].bytecode})
+                gasEstimates: web3.eth.estimateGas({data: '0x' + result.contracts[contractName].bytecode})
             };
 
             contract.create(contractEntity).then(function (contractId) {
+            	console.log('[CONTRACT CREATE] id: ' + contractId);
                 id.push(contractId);
-
+                // send to AWS SQS
+                console.log('Send AWS SQS');
+                sqsHelper.send('{"contractId": ' + contractId + '}', process.env.AWS_CONTRACT_QUEUE_RUL, 10, 'contract');
                 JSON.parse(abi).forEach(function(data){
-                    if (data.type == 'event') {
+                    if (data.type === 'event') {
                         var contractEventEntity = {
                             contractId: contractId,
                             eventName: data.name,
@@ -80,70 +87,31 @@ router.put('/v1/contract', function (req, res, next) {
                         };
                         // TODO insert contractEvent and contractFunction
                         contractEvent.create(contractEventEntity).then(function (contractEventId) {
-                            console.log(contractEventId);
+                            console.log('[CONTRACTEVENT CREATE] id: ' + contractEventId);
                         }).catch(function (err) {
                             console.log(err.message, err.stack);
                         });
                     }
-                    if (data.type == 'function') {
+                    if (data.type === 'function') {
                         var contractFunctionEntity = {
                             contractId: contractId,
                             functionName: data.name,
                             functionParameters: data
                         };
                         contractFunction.create(contractFunctionEntity).then(function (contractFunctionId) {
-                            console.log(contractFunctionId);
+                            console.log('[CONTRACTFUNCTION CREATE] id: ' + contractFunctionId);
                         }).catch(function (err) {
                             console.log(err.message, err.stack);
                         });
                     }
                 });
-                /*
-                // TODO *START* deploy contract 這邊應該要走 queue 比較恰當
-                var newContract = web3.eth.contract(JSON.parse(result.contracts[contractName].interface));
-                var contractResult = newContract.new({
-                    from: web3.eth.coinbase, 
-                    data: result.contracts[contractName].bytecode,
-                    gas: 4700000
-                }, 
-                function(err, deployedContract){
-                    console.log(err, deployedContract);
-                    if (!err) {
-                        if (!deployedContract.address) {
-                            // update transactionHash
-                            console.log(deployedContract.transactionHash);
-                            var entity = {
-                                transactionHash: deployedContract.transactionHash,
-                                id: contractId
-                            };
-                            contract.updateTransactionHash(entity).then(function(result){
-                            }).catch(function (err) {
-                                console.log(err.message, err.stack);
-                                res.json({'error': {'message': err.message}});
-                            });
-                        } else {
-                            // update address
-                            console.log(deployedContract.address);
-                            var entity = {
-                                address: deployedContract.address,
-                                id: contractId
-                            };
-                            contract.updateAddress(entity).then(function(result){
-                            }).catch(function (err) {
-                                console.log(err.message, err.stack);
-                                res.json({'error': {'message': err.message}});
-                            });
-                        }
-                    }
-                });
-                // TODO *END* 到這邊都要放到 queue 去聽
-                */
             }).catch(function (err) {
                 // error handle
                 console.log(err.message, err.stack);
                 res.json({'error': {'message': err.message}});
             });
         }
+        // TODO add Promise
         res.json({'data': {'contractId': id}});
     } else {
         console.log('error invalid source code!');
@@ -163,7 +131,7 @@ router.get('/v1/coinbase', function (req, res, next) {
  */
 router.get('/v1/balance', function (req, res, next) {
     var coinbase = ethereumController.getCoinbase();
-    if (req.query.address != null && req.query.address != '' && req.query.address != undefined) {
+    if (req.query.address !== null && req.query.address !== '' && req.query.address !== undefined) {
         coinbase = req.query.address;
     }
     res.json({'data': {'coinbase': coinbase, 'balance': ethereumController.getBalance(coinbase)}});
@@ -201,7 +169,7 @@ router.put('/v1/transaction', function (req, res, next) {
  */
 router.get('/v1/transaction', function (req, res, next) {
     var txHash = req.query.txHash;
-    if (txHash != null && txHash != '' && txHash != undefined) {
+    if (txHash !== null && txHash !== '' && txHash !== undefined) {
         res.json({'data': {"txHash": txHash}});
     }
     res.json({'error': {'code': 100, 'message': 'txHash is null'}});
@@ -213,7 +181,7 @@ router.get('/v1/transaction', function (req, res, next) {
  */
 router.get('/v1/transactionReceipt', function (req, res, next) {
     var transactionHash = req.query.transactionHash;
-    if (transactionHash != null && transactionHash != '' && transactionHash != undefined) {
+    if (transactionHash !== null && transactionHash !== '' && transactionHash !== undefined) {
         res.json({'data': web3.eth.getTransactionReceipt(transactionHash)});
     }
     res.json({'error': {'code': 102, 'message': 'transactionHash is null'}});
@@ -264,7 +232,7 @@ router.get('/v1/hashrate', function (req, res, next) {
  */
 router.get('/v1/blockInfo', function (req, res, next) {
     var blockHashOrBlockNumber = req.query.block;
-    if ((blockHashOrBlockNumber != null && blockHashOrBlockNumber != '' && blockHashOrBlockNumber != undefined) ||
+    if ((blockHashOrBlockNumber !== null && blockHashOrBlockNumber !== '' && blockHashOrBlockNumber !== undefined) ||
         Number.isInteger(blockNumberOrString)) {
         res.json({'data': {'blockInfo': web3.eth.getBlock(req.query.block)}});
     }
@@ -277,9 +245,9 @@ router.get('/v1/blockInfo', function (req, res, next) {
 router.get('/v1/blockTransactionCount', function (req, res, next) {
     var blockNumberOrString = req.query.block;
     if (Number.isInteger(blockNumberOrString) || 
-        blockNumberOrString == 'pending' || 
-        blockNumberOrString == 'earliest' || 
-        blockNumberOrString == 'latest') {
+        blockNumberOrString === 'PENDING' || 
+        blockNumberOrString === 'EARLIEST' || 
+        blockNumberOrString === 'LATEST') {
         res.json({'data': {'blockTransactionCount': web3.eth.getBlockTransactionCount(req.query.block)}});
     }
     res.json({'error': {'code': 104, 'message': 'block number or block status is needed.'}})

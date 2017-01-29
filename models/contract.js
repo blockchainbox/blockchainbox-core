@@ -27,7 +27,7 @@ Contract.prototype.create = function(entity) {
             console.log(err.message, err.stack);
         });
 	}).catch(function (err) {
-		console.log(err.message, err.stack);
+        console.log(err.message, err.stack);
 	});
 };
 
