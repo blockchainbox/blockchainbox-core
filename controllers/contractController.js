@@ -11,11 +11,12 @@ function ContractController() {}
 ContractController.prototype.setContractFunctionData = function(contractId, contractFunctionId, data) {
 	return contract.read(contractId).then(function(contractResult) {
 		if (contractResult.rowCount > 0) {
-			var contractABI = JSON.parse(contractResult.rows[0].abi);
-			var contractAddress = contractResult.rows[0].address;
+			var contractResultData = contractResult.rows[0];
+			var contractABI = JSON.parse(contractResultData.abi);
+			var contractAddress = contractResultData.address;
 			contractFunction.read(contractFunctionId).then(function(contractFunctionResult) {
 				var contractInstance = web3.eth.contract(contractABI).at(contractAddress);
-				console.log('contractInstance: ', contractInstance);
+				//console.log('contractInstance: ', contractInstance);
 				var args = [];
 				data.forEach(function(param){
 					args.push(param);
@@ -25,7 +26,9 @@ ContractController.prototype.setContractFunctionData = function(contractId, cont
 				// dynamic apply funciton to block chain
 				var transactionHash = contractInstance[contractFunctionResult.rows[0].functionname].apply(this, args);
 				console.log('transactionHash: ', transactionHash);
-				sqsHelper.send('{"transactionHash": "' + transactionHash + '"}', process.env.AWS_TRANSACTION_QUEUE_URL, 10, 'transaction');
+				sqsHelper.send('{"transactionHash": "' + transactionHash + '"}', 
+					process.env.AWS_TRANSACTION_QUEUE_URL, 10, 
+					'transaction');
 				return transactionHash;
 			}).catch(function(err) {
 				console.log(err.message, err.stack);

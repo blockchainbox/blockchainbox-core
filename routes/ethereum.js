@@ -77,7 +77,9 @@ router.post('/v1/contract', function (req, res, next) {
                 id.push(contractId);
                 // send to AWS SQS
                 console.log('Send AWS SQS');
-                sqsHelper.send('{"contractId": ' + contractId + '}', process.env.AWS_CONTRACT_QUEUE_URL, 10, 'contract');
+                sqsHelper.send('{"contractId": ' + contractId + '}', 
+                	process.env.AWS_CONTRACT_QUEUE_URL, 10, 
+                	'contract');
                 JSON.parse(abi).forEach(function(data){
                     if (data.type === 'event') {
                         var contractEventEntity = {
