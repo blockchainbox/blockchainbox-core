@@ -29,7 +29,7 @@ var id = [];
             contract.create(contractEntity).then(function (contractId) {
             	console.log('contractId: ' + contractId);
                 id.push(contractId);
-                sqsHelper.send('{"contractId": ' + contractId + '}', process.env.AWS_CONTRACT_QUEUE_RUL, 10, 'contract');
+                sqsHelper.send('{"contractId": ' + contractId + '}', process.env.AWS_CONTRACT_QUEUE_URL, 10, 'contract');
                 JSON.parse(abi).forEach(function(data){
                 	console.log(data.type);
                     if (data.type == 'event') {

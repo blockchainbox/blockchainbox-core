@@ -14,7 +14,7 @@ AWS.config.update({
 });
  
 var consumer = Consumer.create({
-  queueUrl: process.env.AWS_CONTRACT_QUEUE_RUL,
+  queueUrl: process.env.AWS_CONTRACT_QUEUE_URL,
   handleMessage: function (message, done) {
     var data = JSON.parse(message.Body);
     done();

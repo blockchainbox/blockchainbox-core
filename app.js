@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 // TODO 這邊要加上 whitelist 來控管誰可以對這個 enode 下指令
 var ethereum = require('./routes/ethereum');
+var contract = require('./routes/contract');
 
 var app = express();
 
@@ -26,6 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // for web page
 app.use('/', index);
 // for rest APIs
+app.use('/contract', contract);
 app.use('/ethereum', ethereum);
 
 // catch 404 and forward to error handler
