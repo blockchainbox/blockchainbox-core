@@ -55,7 +55,7 @@ router.get('/v1/contract', function (req, res, next) {
  * POST deploy solidity contract
  */
 router.post('/v1/contract', function (req, res, next) {
-    if (req.body.sourceCode != null && req.body.sourceCode != '') {
+    if (req.body.sourceCode !== undefined && req.body.sourceCode !== null && req.body.sourceCode !== '') {
     	var sourceCode = req.body.sourceCode;
         var result = solc.compile(sourceCode, 1);
         var id = [];
@@ -77,7 +77,7 @@ router.post('/v1/contract', function (req, res, next) {
                 id.push(contractId);
                 // send to AWS SQS
                 console.log('Send AWS SQS');
-                sqsHelper.send('{"contractId": ' + contractId + '}', process.env.AWS_CONTRACT_QUEUE_RUL, 10, 'contract');
+                sqsHelper.send('{"contractId": ' + contractId + '}', process.env.AWS_CONTRACT_QUEUE_URL, 10, 'contract');
                 JSON.parse(abi).forEach(function(data){
                     if (data.type === 'event') {
                         var contractEventEntity = {

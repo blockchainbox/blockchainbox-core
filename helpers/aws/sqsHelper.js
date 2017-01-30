@@ -54,7 +54,7 @@ SqsHelper.prototype.send = function(messageBody, queueUrl, delaySeconds, message
         MessageGroupId: messageGroupId,
         MessageDeduplicationId: date.toString()
     };
-
+    console.log(params);
     sqs.sendMessage(params, function(err, data) {
         if(err) {
              console.log(err);
