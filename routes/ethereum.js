@@ -68,16 +68,17 @@ router.post('/v1/contract', function (req, res, next) {
                 language: result.contracts[contractName].metadata.language,
                 compilerVersion: result.contracts[contractName].metadata.compiler,
                 abi: abi,
-                // have to check [solc]
                 gasEstimates: web3.eth.estimateGas({data: '0x' + result.contracts[contractName].bytecode})
             };
 
             contract.create(contractEntity).then(function (contractId) {
             	console.log('[CONTRACT CREATE] id: ' + contractId);
                 id.push(contractId);
-                // send to AWS SQS
-                console.log('Send AWS SQS');
-                sqsHelper.send('{"contractId": ' + contractId + '}', 
+                
+                var message = {
+                	"contractId": contractId
+                }
+                sqsHelper.send(JSON.stringify(message), 
                 	process.env.AWS_CONTRACT_QUEUE_URL, 10, 
                 	'contract');
                 JSON.parse(abi).forEach(function(data){
