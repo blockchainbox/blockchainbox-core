@@ -52,9 +52,9 @@ router.get('/v1/contract', function (req, res, next) {
 });
 
 /**
- * PUT deploy solidity contract
+ * POST deploy solidity contract
  */
-router.put('/v1/contract', function (req, res, next) {
+router.post('/v1/contract', function (req, res, next) {
     if (req.body.sourceCode != null && req.body.sourceCode != '') {
     	var sourceCode = req.body.sourceCode;
         var result = solc.compile(sourceCode, 1);
@@ -139,10 +139,10 @@ router.get('/v1/balance', function (req, res, next) {
 
 /**
  * 這邊是在針對兩兩之間送錢的做的 transaction，如果是針對合約送錢需要使用 data 寫入合約的 byteCode
- * PUT send transaction
+ * POST send transaction
  * https://github.com/ethereum/wiki/wiki/JavaScript-API#web3ethsendtransaction
  */
-router.put('/v1/transaction', function (req, res, next) {
+router.post('/v1/transaction', function (req, res, next) {
     // TODO: init gas maximum
     web3.eth.sendTransaction(
         {
