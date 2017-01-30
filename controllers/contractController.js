@@ -1,6 +1,7 @@
 var Web3 = require('web3');
 var contract = require('../models/contract.js');
 var contractFunction = require('../models/contractFunction.js');
+var transactionData = require('../models/transactionData.js');
 var sqsHelper = require('../helpers/aws/sqsHelper.js');
 var web3 = new Web3();
 
@@ -8,17 +9,27 @@ web3.setProvider(new web3.providers.HttpProvider(process.env.ENODE_BASE || 'http
 
 function ContractController() {}
 
-ContractController.prototype.setContractFunctionData = function(contractId, contractFunctionId, data) {
-	return contract.read(contractId).then(function(contractResult) {
+/**
+ * Set function param into contract
+ * 
+ * entity: {
+ *   "contractId": integer,
+ *   "contractFunctionId": integer,
+ *   "data": array,
+ *   "txHash": string	
+ * }
+ */ 
+ContractController.prototype.setContractFunctionData = function(entity) {
+	contract.read(entity.contractId).then(function(contractResult) {
 		if (contractResult.rowCount > 0) {
 			var contractResultData = contractResult.rows[0];
 			var contractABI = JSON.parse(contractResultData.abi);
 			var contractAddress = contractResultData.address;
-			contractFunction.read(contractFunctionId).then(function(contractFunctionResult) {
+			contractFunction.read(entity.contractFunctionId).then(function(contractFunctionResult) {
 				var contractInstance = web3.eth.contract(contractABI).at(contractAddress);
 				//console.log('contractInstance: ', contractInstance);
 				var args = [];
-				data.forEach(function(param){
+				entity.data.forEach(function(param){
 					args.push(param);
 				});
 				// TODO use estimateGas
@@ -26,10 +37,25 @@ ContractController.prototype.setContractFunctionData = function(contractId, cont
 				// dynamic apply funciton to block chain
 				var transactionHash = contractInstance[contractFunctionResult.rows[0].functionname].apply(this, args);
 				console.log('transactionHash: ', transactionHash);
-				sqsHelper.send('{"transactionHash": "' + transactionHash + '"}', 
-					process.env.AWS_TRANSACTION_QUEUE_URL, 10, 
-					'transaction');
-				return transactionHash;
+
+				var message = {
+					"transactionHash": transactionHash
+				}
+				sqsHelper.send(JSON.stringify(message), 
+					process.env.AWS_TRANSACTION_RECEIPT_QUEUE_URL, 10, 
+					'transactionReceipt');
+
+				var transactionDataEntity = {
+					"transactionHash": transactionHash,
+					"fromAddress": web3.eth.coinbase,
+					"status": transactionData.PENDING,
+					"txHash": entity.txHash
+				};
+				transactionData.updateByTxHash(transactionDataEntity).then(function(transactionDataResult) {
+					console.log('[TRANSACTIONDATA UPDATE] txHash: ' + entity.txHash + ' transactionHash: ' + transactionHash);
+				}).catch(function(err) {
+					console.log(err.message, err.stack);
+				});
 			}).catch(function(err) {
 				console.log(err.message, err.stack);
 			});

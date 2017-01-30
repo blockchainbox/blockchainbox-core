@@ -3,6 +3,8 @@ var contract = require('../models/contract.js');
 var contractFunction = require('../models/contractFunction.js');
 var contractEvent = require('../models/contractEvent.js');
 var contractController = require('../controllers/contractController.js');
+var transactionData = require('../models/transactionData.js');
+var sqsHelper = require('../helpers/aws/sqsHelper.js');
 var router = express.Router();
 
 /**
@@ -21,8 +23,21 @@ router.post('/v1/function', function(req, res, next) {
 	var contractId = req.body.contractId;
 	var contractFunctionId = req.body.contractFunctionId;
 	var data = req.body.data;
-	var transactionHash = contractController.setContractFunctionData(contractId, contractFunctionId, data);
-	res.json({'data': {'transactionHash': transactionHash}});
+	transactionData.create({"data": JSON.stringify(data)}).then(function (txHash) {
+		var message = {
+			"txHash": txHash,
+			"contractId": contractId,
+			"contractFunctionId": contractFunctionId,
+			"data": data
+		};
+		sqsHelper.send(JSON.stringify(message), 
+					process.env.AWS_TRANSACTION_QUEUE_URL, 10, 
+					'transaction');
+		res.json({'data': {'txHash': txHash}});
+	}).catch(function(err) {
+		console.log(err.message, err.stack);
+		res.json({'error': {'code': 204, 'message': 'error on send transaction'}});
+	});
 });
 
 /**
@@ -38,3 +53,5 @@ router.get('/v1/function', function(req, res, next){
 router.get('/v1/event', function(req, res, next) {
 
 });
+
+module.exports = router;

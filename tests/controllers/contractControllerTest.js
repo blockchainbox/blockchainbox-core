@@ -1,4 +1,10 @@
 var contractController = require('../../controllers/contractController.js');
 
-console.log(contractController.setContractFunctionData(16, 16, ['xxx']));
+var entity = {
+	"contractId": 16,
+	"contractFunctionId": 16,
+	"data": ['xxx'],
+	"txHash": ""
+};
+console.log(contractController.setContractFunctionData(entity);
 //console.log(contractController.setContractFunctionData(16, 18, {param1:'xxx', param2:'abc'}));
