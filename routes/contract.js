@@ -50,7 +50,7 @@ router.get('/v1/transaction', function(req, res, next){
 	var txHash = req.query.txHash;
 	transactionData.read(txHash).then(function(transactionDataResult) {
 		if (transactionDataResult.rowCount > 0) {
-			res.json({'data': transactionDataResult});
+			res.json({'data': transactionDataResult.rows[0]});
 		} else {
 			res.json({'error': {'code': 212, 'message': 'empty data'}});
 		}
