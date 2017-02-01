@@ -10,7 +10,7 @@ var router = express.Router();
 /**
  * POST use contract function
  */
-router.post('/v1/function', function(req, res, next) {
+router.post('/v1/transaction', function(req, res, next) {
 	if (req.body.contractId === undefined) {
 		res.json({'error': {'code': 201, 'message': 'contractId is null'}});
 	}
@@ -43,15 +43,99 @@ router.post('/v1/function', function(req, res, next) {
 /**
  * GET function transaction status
  */
-router.get('/v1/function', function(req, res, next){
-
+router.get('/v1/transaction', function(req, res, next){
+	if (req.query.txHash === undefined) {
+		res.json({'error': {'code': 211, 'message': 'txHash is null'}});
+	}
+	var txHash = req.query.txHash;
+	transactionData.read(txHash).then(function(transactionDataResult) {
+		if (transactionDataResult.rowCount > 0) {
+			res.json({'data': transactionDataResult});
+		} else {
+			res.json({'error': {'code': 212, 'message': 'empty data'}});
+		}
+	}).catch(function(err) {
+		console.log(err.message, err.stack);
+		res.json({'error': {'code': 213, 'message': 'error on load data'}});
+	});
 });
 
 /**
- * GET event data 
+ * GET contract info
+ */
+router.get('/v1/info', function (req, res, next) {
+    var contractId = req.query.contractId;
+    var contractInfo = null;
+    var contractEventInfo = null;
+    var contractFunctionInfo = null;
+    var contractLoaded = new Promise(function(resolve, reject) {
+        contract.read(contractId).then(function(contractResult) {
+            contractInfo = contractResult.rows;
+            contractEvent.readByContractId(contractId).then(function(contractEventResult){
+                contractEventInfo = contractEventResult.rows; 
+                contractFunction.readByContractId(contractId).then(function(contractFunctionResult){
+                    contractFunctionInfo = contractFunctionResult.rows;
+                    var info = {
+                        contract: contractInfo,
+                        contractEvent: contractEventInfo,
+                        contractFunction: contractFunctionInfo
+                    };
+                    res.json({'data': info});
+                })
+            })
+        })
+    });
+});
+
+/**
+ * GET load event data 
  */
 router.get('/v1/event', function(req, res, next) {
+	if (req.query.txHash === undefined) {
+		res.json({'error': {'code': 211, 'message': 'txHash is null'}});
+	}
+	var txHash = req.query.txHash;
+	// TODO load event data
+});
 
+/**
+ * GET load contract event
+ */
+router.get('/v1/event/info', function(req, res, next) {
+	if (req.query.contractEventId === undefined) {
+		res.json({'error': {'code': 214, 'message': 'contractEventId is null'}});
+	}
+	var contractEventId = req.query.contractEventId;
+	contractEvent.read(contractEventId).then(function(result) {
+		if (result.rowCount > 0) {
+			res.json({'data': result.rows});
+		} else {
+			res.json({'error': {'code': 212, 'message': 'empty data'}});
+		}
+	}).catch(function(err) {
+		console.log(err.message, err.stack);
+		res.json({'error': {'code': 213, 'message': 'error on load data'}});
+	});
+});
+
+/**
+ * GET load contract function
+ */
+router.get('/v1/function/info', function(req, res, next) {
+	if (req.query.contractFunctionId === undefined) {
+		res.json({'error': {'code': 215, 'message': 'contractFunctionId is null'}});
+	}
+	var contractFunctionId = req.query.contractFunctionId;
+	contractFunction.read(contractFunctionId).then(function(result) {
+		if (result.rowCount > 0) {
+			res.json({'data': result.rows});
+		} else {
+			res.json({'error': {'code': 212, 'message': 'empty data'}});
+		}
+	}).catch(function(err) {
+		console.log(err.message, err.stack);
+		res.json({'error': {'code': 213, 'message': 'error on load data'}});
+	});
 });
 
 module.exports = router;

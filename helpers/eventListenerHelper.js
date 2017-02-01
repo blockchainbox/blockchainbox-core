@@ -3,7 +3,8 @@ var web3 = new Web3();
 
 web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
 
-function EventListenerHelper() {
+var EventListenerHelper = function () {
+
 }
 
 EventListenerHelper.prototype.filterWatch = function(transactionHash, callback) {
@@ -11,10 +12,12 @@ EventListenerHelper.prototype.filterWatch = function(transactionHash, callback) 
     filter.watch(function(err, result) {
         if (!err) {
             //console.log("latest: ", result);
+            //console.log('#3', new Date());
             var blockInfo = web3.eth.getBlock(result);
-            //console.log("block: ", info);
-            if (blockInfo.transactions > 0) {
+            //console.log("blockInfo: ", blockInfo);
+            if (blockInfo.transactions.length > 0) {
                 blockInfo.transactions.forEach(function (tx) {
+                    console.log('tx: ', tx);
                     if (tx == transactionHash) {
                         var transactionInfo = web3.eth.getTransaction(tx);
                         var transactionReceiptInfo = web3.eth.getTransactionReceipt(tx);
@@ -47,4 +50,4 @@ EventListenerHelper.prototype.getTransactionReceipt = function(transactionHash) 
     return web3.eth.getTransactionReceipt(transactionHash);
 };
 
-exports = module.exports = new EventListenerHelper();
+exports = module.exports = EventListenerHelper;
