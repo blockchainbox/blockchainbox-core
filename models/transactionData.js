@@ -43,7 +43,6 @@ TransactionData.prototype.create = function(entity) {
 };
 
 TransactionData.prototype.update = function(entity) {
-    // TODO 定義 status
     return pool.query("UPDATE transactiondata SET " +
         "transactionhash = $1, status = $2, blocknumber = $3, blockhash = $4, fromAddress = $5, updateTimestamp = now() WHERE txhash = $6",
         [entity.transactionHash, entity.status, entity.blockNumber, entity.blockHash, entity.fromAddress, entity.txHash]);

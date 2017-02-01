@@ -5,8 +5,10 @@ var contract = require('../../models/contract.js');
 var contractFunction = require('../../models/contractFunction.js');
 var contractEvent = require('../../models/contractEvent.js');
 var transactionData = require('../../models/transactionData.js');
-var eventListenerHelper = require('../../helpers/eventListenerHelper.js');
+var EventListenerHelper = require('../../helpers/eventListenerHelper.js');
 var web3 = new Web3();
+
+
 
 web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
  
@@ -22,9 +24,8 @@ var consumer = Consumer.create({
     handleMessage: function (message, done) {
       var data = JSON.parse(message.Body);
       console.log(data.transactionHash);
-      done();
-      eventListenerHelper.filterWatch(data.transactionHash, function(transactionInfo, transactionReceiptInfo, blockInfo) {
-        // TODO save to TransactionData
+      var eventListener = new EventListenerHelper();
+      eventListener.filterWatch(data.transactionHash, function(transactionInfo, transactionReceiptInfo, blockInfo) {
         console.log('transaction info: ', transactionInfo);
         console.log('transaction receipt info: ', transactionReceiptInfo);
         console.log('block info: ', blockInfo);
@@ -48,6 +49,7 @@ var consumer = Consumer.create({
               console.log(err.message, err.stack);
           });
       });
+      done();
     },
     sqs: new AWS.SQS()
 });

@@ -26,42 +26,46 @@ ContractController.prototype.setContractFunctionData = function(entity) {
 			var contractABI = JSON.parse(contractResultData.abi);
 			var contractAddress = contractResultData.address;
 			contractFunction.read(entity.contractFunctionId).then(function(contractFunctionResult) {
-				var contractInstance = web3.eth.contract(contractABI).at(contractAddress);
-				//console.log('contractInstance: ', contractInstance);
-				var args = [];
-				entity.data.forEach(function(param){
-					args.push(param);
-				});
-				// TODO use estimateGas
-				args.push({from: web3.eth.coinbase, gas: 4700000});
-				// dynamic apply funciton to block chain
-				var transactionHash = contractInstance[contractFunctionResult.rows[0].functionname].apply(this, args);
-				console.log('transactionHash: ', transactionHash);
+				if (contractFunctionResult.rowCount > 0) {
+					var contractFunctionResultData = contractFunctionResult.rows[0];
+					var contractInstance = web3.eth.contract(contractABI).at(contractAddress);
+					var args = [];
+					entity.data.forEach(function(param){
+						args.push(param);
+					});
+					// TODO use estimateGas
+					args.push({from: web3.eth.coinbase, gas: 4700000});
+					// dynamic apply funciton to block chain
+					var transactionHash = contractInstance[contractFunctionResultData.functionname].apply(this, args);
+					console.log('transactionHash: ' + transactionHash);
 
-				var message = {
-					"transactionHash": transactionHash
+					var message = {
+						"transactionHash": transactionHash
+					}
+					sqsHelper.send(JSON.stringify(message), 
+						process.env.AWS_TRANSACTION_RECEIPT_QUEUE_URL, 10, 
+						'transactionReceipt');
+
+					var transactionDataEntity = {
+						"transactionHash": transactionHash,
+						"fromAddress": web3.eth.coinbase,
+						"status": transactionData.PENDING,
+						"txHash": entity.txHash
+					};
+					transactionData.updateByTxHash(transactionDataEntity).then(function(transactionDataResult) {
+						console.log('[TRANSACTIONDATA UPDATE] txHash: ' + entity.txHash + ' transactionHash: ' + transactionHash);
+					}).catch(function(err) {
+						console.log('[ERROR] TransactionData', err.message, err.stack);
+					});
+				} else {
+					console.log('contractFunction empty data');
 				}
-				sqsHelper.send(JSON.stringify(message), 
-					process.env.AWS_TRANSACTION_RECEIPT_QUEUE_URL, 10, 
-					'transactionReceipt');
-
-				var transactionDataEntity = {
-					"transactionHash": transactionHash,
-					"fromAddress": web3.eth.coinbase,
-					"status": transactionData.PENDING,
-					"txHash": entity.txHash
-				};
-				transactionData.updateByTxHash(transactionDataEntity).then(function(transactionDataResult) {
-					console.log('[TRANSACTIONDATA UPDATE] txHash: ' + entity.txHash + ' transactionHash: ' + transactionHash);
-				}).catch(function(err) {
-					console.log(err.message, err.stack);
-				});
 			}).catch(function(err) {
-				console.log(err.message, err.stack);
+				console.log('[ERROR] ContractFunction', err.message, err.stack);
 			});
 		}
 	}).catch(function(err) {
-		console.log(err.message, err.stack);
+		console.log('[ERROR] Contract', err.message, err.stack);
 	});
 }
 

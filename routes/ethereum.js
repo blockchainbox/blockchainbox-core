@@ -25,6 +25,7 @@ router.get('/v1/compilers', function (req, res, next) {
 });
 
 /**
+ * TODO should replace by load contract from ethereum blockchain
  * GET contract info
  */
 router.get('/v1/contract', function (req, res, next) {
