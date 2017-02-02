@@ -4,6 +4,7 @@ var contractFunction = require('../models/contractFunction.js');
 var contractEvent = require('../models/contractEvent.js');
 var contractController = require('../controllers/contractController.js');
 var transactionData = require('../models/transactionData.js');
+var eventData = require('../models/eventData.js');
 var sqsHelper = require('../helpers/aws/sqsHelper.js');
 var router = express.Router();
 
@@ -95,7 +96,13 @@ router.get('/v1/event', function(req, res, next) {
 		res.json({'error': {'code': 211, 'message': 'txHash is null'}});
 	}
 	var txHash = req.query.txHash;
-	// TODO load event data
+	eventData.readByTxHash(txHash).then(function(result) {
+		if (result.rowCount > 0) {
+			res.json({'data': result.rows});
+		} else {
+			res.json({'error': {'code': 212, 'message': 'empty data'}});
+		}
+	});
 });
 
 /**
