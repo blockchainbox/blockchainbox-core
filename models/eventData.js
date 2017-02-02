@@ -39,7 +39,3 @@ EventData.prototype.delete = function() {
 };
 
 exports = module.exports = new EventData();
-SELECT * FROM eventData WHERE transactionHash = (
-SELECT transactionHash FROM transactionData 
-WHERE txHash = '6590fa52fa76f967656340b874bc9ca09733c2fddea9886210ebcbbceee04b35' 
-AND status = 'CONFIRMED');
