@@ -65,7 +65,10 @@ CREATE TABLE IF NOT EXISTS EventData (
 	contractEventId integer,
 	txHash text,
 	transactionHash text,	-- reference to transactionHash
-	name text,	-- event name
+	blockNumber integer,
+	blockHash text,
+	address text,
+	event text,	-- event name
 	data text,	-- event data, transactionData.dataHash will belong here
 	createTimestamp timestamp with time zone
 );

@@ -48,6 +48,18 @@
         "KAFKA_HOST"        : "localhost",
         "KAFKA_PORT"        : 9092
       }
+    },{
+      name       : "blockchainbox-core-event-consumer",
+      script     : "./schedulers/aws/sqsEventConsumer.js",
+      watch       : true,
+      env: {
+        "NODE_ENV": "development",
+        "ENODE_BASE"        : "http://localhost:8545",
+        "POSTGRESQL_HOST"   : "localhost",
+        "POSTGRESQL_PORT"   : 5432,
+        "KAFKA_HOST"        : "localhost",
+        "KAFKA_PORT"        : 9092
+      }
     }
   ]
 }

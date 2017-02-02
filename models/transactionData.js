@@ -30,9 +30,9 @@ TransactionData.prototype.create = function(entity) {
         var txId = result.rows[0].txid;
         var txHash = keccak_256(txId);
         console.log('[TRANSACTION CREATE] txId: ' + txId + ', txHash: ' + txHash);
-        return pool.query("INSERT INTO transactiondata (txid, txhash, data, status, network, txtimestamp) " +
+        return pool.query("INSERT INTO transactiondata (txid, contractFunctionId, txhash, data, status, network, txtimestamp) " +
             "values ($1, $2, $3, $4, $5, $6)",
-            [txId, txHash, entity.data, TransactionData.prototype.UNCONFIRMED, 'testnet', 'now']).then(function(){
+            [txId, entity.contractFunctionId, txHash, entity.data, TransactionData.prototype.UNCONFIRMED, 'testnet', 'now']).then(function(){
             return txHash;
         }).catch(function (err) {
             console.log(err.message, err.stack);

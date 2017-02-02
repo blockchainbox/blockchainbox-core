@@ -40,6 +40,8 @@ ContractController.prototype.setContractFunctionData = function(entity) {
 					console.log('transactionHash: ' + transactionHash);
 
 					var message = {
+						"contractId": entity.contractId,
+						"txHash": entity.txHash,
 						"transactionHash": transactionHash
 					}
 					sqsHelper.send(JSON.stringify(message), 
