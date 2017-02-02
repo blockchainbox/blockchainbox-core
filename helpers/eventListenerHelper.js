@@ -14,7 +14,7 @@ EventListenerHelper.prototype.filterWatch = function(transactionHash, callback) 
             //console.log("latest: ", result);
             //console.log('#3', new Date());
             var blockInfo = web3.eth.getBlock(result);
-            //console.log("blockInfo: ", blockInfo);
+            console.log("blockInfo: ", blockInfo);
             if (blockInfo.transactions.length > 0) {
                 blockInfo.transactions.forEach(function (tx) {
                     console.log('tx: ', tx);

@@ -11,9 +11,17 @@ EventData.prototype.read = function(txHash) {
 };
 
 EventData.prototype.create = function(entity) {
-    return pool.query('INSERT INTO eventdata (contractEventId, transactionHash, name, data, createTimestamp) '
-    	+ ' VALUES ($1, $2, $3, $4, now())',
-    	[entity.contractEventId, entity.transactionHash, entity.name, entity.data]);
+    return pool.query('INSERT INTO eventdata '
+    	+ '(contractEventId, transactionHash, event, data, blocknumber, blockhash, address, createTimestamp) '
+    	+ ' SELECT $1, $2, $3, $4, $5, $6, $7, now() '
+		+ ' WHERE NOT EXISTS ( '
+		+ ' SELECT 1 FROM eventdata WHERE contractEventId = $8 AND transactionHash = $9 AND event = $10 '
+		+ ' AND data = $11 AND blocknumber = $12 AND blockhash = $13 AND address = $14 '
+		+ ')',
+    	[entity.contractEventId, entity.transactionHash, entity.event, 
+    	entity.data, entity.blockNumber, entity.blockHash, entity.address,
+    	entity.contractEventId, entity.transactionHash, entity.event, 
+    	entity.data, entity.blockNumber, entity.blockHash, entity.address]);
 };
 
 EventData.prototype.update = function() {
