@@ -26,34 +26,6 @@ router.get('/v1/compilers', function (req, res, next) {
 });
 
 /**
- * TODO should replace by load contract from ethereum blockchain
- * GET contract info
- */
-router.get('/v1/contract', function (req, res, next) {
-    var contractId = req.query.contractId;
-    var contractInfo = null;
-    var contractEventInfo = null;
-    var contractFunctionInfo = null;
-    var contractLoaded = new Promise(function(resolve, reject) {
-        contract.read(contractId).then(function(result) {
-            contractInfo = result.rows;
-            contractEvent.readByContractId(contractId).then(function(result){
-                contractEventInfo = result.rows; 
-                contractFunction.readByContractId(contractId).then(function(result){
-                    contractFunctionInfo = result.rows;
-                    var info = {
-                        contract: contractInfo,
-                        contractEvent: contractEventInfo,
-                        contractFunction: contractFunctionInfo
-                    };
-                    res.json({'data': info});
-                })
-            })
-        })
-    });
-});
-
-/**
  * POST deploy solidity contract
  */
 router.post('/v1/contract', function (req, res, next) {
