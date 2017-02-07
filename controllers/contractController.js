@@ -1,13 +1,85 @@
 var Web3 = require('web3');
+var solc = require('solc');
+var util = require('util');
+var Promise = require('bluebird');
 var contract = require('../models/contract.js');
+var contractEvent = require('../models/contractEvent.js');
 var contractFunction = require('../models/contractFunction.js');
 var transactionData = require('../models/transactionData.js');
 var sqsHelper = require('../helpers/aws/sqsHelper.js');
+
 var web3 = new Web3();
 
 web3.setProvider(new web3.providers.HttpProvider(process.env.ENODE_BASE || 'http://localhost:8545'));
 
 function ContractController() {}
+
+ContractController.prototype.deployContract = function(sourceCode) {
+    return new Promise(function(resolve, reject) {
+    	var result = solc.compile(sourceCode, 1);
+	    var ids = [];
+	    var promises = [];
+        for (var contractName in result.contracts) {
+        	promises.push(new Promise(function(resolveContract, reject) {
+				var abi = result.contracts[contractName].interface;
+				var contractEntity = {
+	                name: contractName, 
+	                sourceCode: sourceCode,
+	                byteCode: result.contracts[contractName].bytecode,
+	                language: result.contracts[contractName].metadata.language,
+	                compilerVersion: result.contracts[contractName].metadata.compiler,
+	                abi: abi,
+	                gasEstimates: web3.eth.estimateGas({data: '0x' + result.contracts[contractName].bytecode})
+	            };
+
+	            contract.create(contractEntity).then(function (contractId) {
+	            	console.log('[CONTRACT CREATE] id: ' + contractId);
+	                ids.push(contractId);
+	                
+	                var message = {
+	                	"contractId": contractId
+	                }
+	                sqsHelper.send(JSON.stringify(message), 
+	                	process.env.AWS_CONTRACT_QUEUE_URL, 10, 
+	                	'contract');
+	                JSON.parse(abi).forEach(function(data){
+	                    if (data.type === 'event') {
+	                        var contractEventEntity = {
+	                            contractId: contractId,
+	                            eventName: data.name,
+	                            eventParameters: data
+	                        };
+	                        contractEvent.create(contractEventEntity).then(function (contractEventId) {
+	                            console.log('[CONTRACTEVENT CREATE] id: ' + contractEventId);
+	                        }).catch(function (err) {
+	                            console.log(err.message, err.stack);
+	                        });
+	                    }
+	                    if (data.type === 'function') {
+	                        var contractFunctionEntity = {
+	                            contractId: contractId,
+	                            functionName: data.name,
+	                            functionParameters: data
+	                        };
+	                        contractFunction.create(contractFunctionEntity).then(function (contractFunctionId) {
+	                            console.log('[CONTRACTFUNCTION CREATE] id: ' + contractFunctionId);
+	                        }).catch(function (err) {
+	                            console.log(err.message, err.stack);
+	                        });
+	                    }
+	                });
+	                resolveContract()
+	            }).catch(function (err) {
+	                // error handle
+	                console.log(err.message, err.stack);
+	                // res.json({'error': {'message': err.message}});
+	                reject(err);
+	            });
+	        }));
+        }
+        return Promise.all(promises).then(() => { resolve(ids) });
+    });
+}
 
 /**
  * Set function param into contract

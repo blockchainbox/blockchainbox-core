@@ -1,6 +1,8 @@
 /**
  * How to use exports 
  * Reference: https://987.tw/2014/03/08/export-this-node-jsmo-zu-de-jie-mian-she-ji-mo-shi/
+ *
+ * Connect AWS RDS from localhost: http://stackoverflow.com/questions/31181963/aws-rds-how-to-access-connect-to-rds-mysql-db-from-localhost
  */
 var pg = require('pg');
 
@@ -9,15 +11,14 @@ var pg = require('pg');
 // note: all config is optional and the environment variables
 // will be read if the config is not present
 var config = {
-    user: 'root', //env var: PGUSER
-    database: 'postgres', //env var: PGDATABASE
-    password: 'root', //env var: PGPASSWORD
-    host: 'localhost', // Server hosting the postgres database
-    port: 5432, //env var: PGPORT
+    user: process.env.AWS_RDS_USER || 'root', //env var: PGUSER
+    database: process.env.AWS_RDS_DATABASE || 'postgres', //env var: PGDATABASE
+    password: process.env.AWS_RDS_PASSWORD || 'root', //env var: PGPASSWORD
+    host: process.env.AWS_RDS_HOST || 'localhost', // Server hosting the postgres database
+    port: process.env.AWS_RDS_PORT || 5432, //env var: PGPORT
     max: 10, // max number of clients in the pool
     idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
 };
-
 
 //this initializes a connection pool
 //it will keep idle connections open for a 30 seconds
