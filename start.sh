@@ -1,4 +1,4 @@
-npm install && npm run start
+npm install
 pm2 delete blockchainbox-core
 pm2 delete blockchainbox-core-contract-consumer
 pm2 delete blockchainbox-core-transaction-consumer
