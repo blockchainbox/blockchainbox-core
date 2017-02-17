@@ -1,0 +1,201 @@
+swagger: '2.0'
+info:
+  title: Blockchainbox API
+  description: Blockchain as a Service, API documents
+  version: "1.0.0"
+# the domain of the service
+host: localhost
+# array of all schemes that your API supports
+schemes:
+  - http
+# will be prefixed to all paths
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /contract/v1/info:
+    get:
+      summary: Contract Info
+      description: |
+        Get contract info by contractId
+      parameters:
+        - name: contractId
+          in: query
+          description: Load by contractId.
+          required: true
+          type: number
+          format: double
+      tags:
+        - Contract
+      responses:
+        200:
+          description: An array of products
+          schema:
+            type: object
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /contract/v1/event:
+    get:
+      summary: Contract Event Info
+      description: |
+        Get contract event info by contract event id
+      parameters:
+        - name: contractEventId
+          in: query
+          description: Load by contractEventId.
+          required: true
+          type: number
+          format: double
+      tags:
+        - Contract
+      responses:
+        200:
+          description: An array of products
+          schema:
+            type: object
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /event/v1/data:
+    get:
+      summary: Event data
+      description: |
+        Get contract event data
+      parameters: 
+        - name: txHash
+          in: query
+          description: test
+          required: true
+          type: string
+      tags:
+        - Event
+      responses:
+        200:
+          description: An array of products
+          schema:
+            type: object
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /transaction/v1/data:
+    post:
+      summary: transaction data
+      description: |
+        Send transaction data
+      parameters: 
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/TransactionData'
+      tags:
+        - Transaction
+      responses:
+        200:
+          description: An array of products
+          schema:
+            type: object
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    get:
+      summary: transaction data
+      description: | 
+        Get transaction data
+      parameters: 
+        - name: txHash
+          in: query
+          description: test
+          required: true
+          type: string
+      tags:
+        - Transaction
+      responses:
+        200:
+          description: An array of products
+          schema:
+            type: object
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /ethereum/v1/compilers:
+    get:
+      summary: Ethereum compilers
+      description: |
+        Get Ethereum compilers
+      tags:
+        - Ethereum
+      responses:
+        200:
+          description: An array of support compilers
+          schema:
+            $ref: '#/definitions/Compiler'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /ethereum/v1/contract:
+    post:
+      summary: Deploy contract
+      description: |
+        Deploy contract to Ethereum
+      tags: 
+        - Ethereum
+      responses:
+        200:
+          description: An array of contract id
+          schema:
+            type: string
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  Contract:
+    type: object
+    properties:
+      product_id:
+        type: string
+        description: Unique identifier representing a specific product for a given latitude & longitude. For example, uberX in San Francisco will have a different product_id than uberX in Los Angeles.
+      description:
+        type: string
+        description: Description of product.
+      display_name:
+        type: string
+        description: Display name of product.
+      capacity:
+        type: string
+        description: Capacity of product. For example, 4 people.
+      image:
+        type: string
+        description: Image URL representing the product.
+  TransactionData:
+    type: object
+    properties:
+      contractId:
+        type: integer
+        format: int32
+      contractFunctionId:
+        type: integer
+        format: int32
+      data:
+        type: string
+  Compiler:
+    type: object
+    properties:
+      compiler:
+        type: string
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
