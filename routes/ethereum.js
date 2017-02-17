@@ -85,18 +85,6 @@ router.post('/v1/transaction', function (req, res, next) {
 });
 
 /**
- * GET query txHash from contract
- * https://github.com/ethereum/wiki/wiki/JavaScript-API#contract-methods
- */
-router.get('/v1/transaction', function (req, res, next) {
-    var txHash = req.query.txHash;
-    if (txHash !== null && txHash !== '' && txHash !== undefined) {
-        res.json({'data': {"txHash": txHash}});
-    }
-    res.json({'error': {'code': 100, 'message': 'txHash is null'}});
-});
-
-/**
  * GET transactionReceipt
  * https://github.com/ethereum/wiki/wiki/JavaScript-API#web3ethgettransactionreceipt
  */
