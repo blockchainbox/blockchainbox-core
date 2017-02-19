@@ -5,11 +5,11 @@
         "description": "Blockchain as a Service, API documents",
         "version": "1.0.0"
     },
-    "host": "localhost",
+    "host": "localhost:3000",
     "schemes": [
         "http"
     ],
-    "basePath": "/v1",
+    "basePath": "/",
     "produces": [
         "application/json"
     ],
@@ -33,16 +33,13 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "An array of products",
-                        "schema": {
-                            "type": "object"
-                        }
+                        "description": "Success"
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
                     }
                 }
             }
@@ -66,16 +63,13 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "An array of products",
-                        "schema": {
-                            "type": "object"
-                        }
+                        "description": "Success"
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
                     }
                 }
             }
@@ -98,16 +92,13 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "An array of products",
-                        "schema": {
-                            "type": "object"
-                        }
+                        "description": "Success"
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
                     }
                 }
             }
@@ -131,16 +122,13 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "An array of products",
-                        "schema": {
-                            "type": "object"
-                        }
+                        "description": "Success"
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
                     }
                 }
             },
@@ -151,7 +139,7 @@
                     {
                         "name": "txHash",
                         "in": "query",
-                        "description": "test",
+                        "description": "txHash",
                         "required": true,
                         "type": "string"
                     }
@@ -161,16 +149,13 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "An array of products",
-                        "schema": {
-                            "type": "object"
-                        }
+                        "description": "Success"
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
                     }
                 }
             }
@@ -184,16 +169,13 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "An array of support compilers",
-                        "schema": {
-                            "$ref": "#/definitions/Compiler"
-                        }
+                        "description": "Success"
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
                     }
                 }
             }
@@ -205,18 +187,241 @@
                 "tags": [
                     "Ethereum"
                 ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SourceCode"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "An array of contract id",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "description": "Success"
                     },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/ethereum/v1/coinbase": {
+            "get": {
+                "summary": "Ethereum coinbase",
+                "description": "Get Ethereum coinbase\n",
+                "tags": [
+                    "Ethereum"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/ethereum/v1/balance": {
+            "get": {
+                "summary": "Ethereum account balance",
+                "description": "Get Ethereum account balance\n",
+                "tags": [
+                    "Ethereum"
+                ],
+                "parameters": [
+                    {
+                        "name": "address",
+                        "in": "query",
+                        "description": "address",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/ethereum/v1/transactionReceipt": {
+            "get": {
+                "summary": "Ethereum transaction receipt",
+                "description": "Get Ethereum transaction receipt\n",
+                "tags": [
+                    "Ethereum"
+                ],
+                "parameters": [
+                    {
+                        "name": "transactionHash",
+                        "in": "query",
+                        "description": "transactionHash",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/ethereum/v1/estimateGas": {
+            "get": {
+                "summary": "Ethereum estimate gas",
+                "description": "Get Ethereum estimate gas\n",
+                "tags": [
+                    "Ethereum"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/ethereum/v1/gasPrice": {
+            "get": {
+                "summary": "Ethereum gas price",
+                "description": "Get Ethereum gas price\n",
+                "tags": [
+                    "Ethereum"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/ethereum/v1/blockNumber": {
+            "get": {
+                "summary": "Ethereum block number",
+                "description": "Get Ethereum block number\n",
+                "tags": [
+                    "Ethereum"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/ethereum/v1/hashrate": {
+            "get": {
+                "summary": "Ethereum hashrate",
+                "description": "Get Ethereum hashrate\n",
+                "tags": [
+                    "Ethereum"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/ethereum/v1/blockInfo": {
+            "get": {
+                "summary": "Ethereum block info",
+                "description": "Get Ethereum block info\n",
+                "tags": [
+                    "Ethereum"
+                ],
+                "parameters": [
+                    {
+                        "name": "block",
+                        "in": "query",
+                        "description": "block number or block hash",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/ethereum/v1/blockTransactionCount": {
+            "get": {
+                "summary": "Ethereum block transaction count",
+                "description": "Get Ethereum block transaction count\n",
+                "tags": [
+                    "Ethereum"
+                ],
+                "parameters": [
+                    {
+                        "name": "block",
+                        "in": "query",
+                        "description": "block number or string",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
                     }
                 }
             }
@@ -268,6 +473,14 @@
             "type": "object",
             "properties": {
                 "compiler": {
+                    "type": "string"
+                }
+            }
+        },
+        "SourceCode": {
+            "type": "object",
+            "properties": {
+                "sourceCode": {
                     "type": "string"
                 }
             }
