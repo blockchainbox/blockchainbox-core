@@ -4,12 +4,12 @@ info:
   description: Blockchain as a Service, API documents
   version: "1.0.0"
 # the domain of the service
-host: localhost
+host: localhost:3000
 # array of all schemes that your API supports
 schemes:
   - http
 # will be prefixed to all paths
-basePath: /v1
+basePath: /
 produces:
   - application/json
 paths:
@@ -29,13 +29,11 @@ paths:
         - Contract
       responses:
         200:
-          description: An array of products
-          schema:
-            type: object
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
   /contract/v1/event:
     get:
       summary: Contract Event Info
@@ -52,13 +50,11 @@ paths:
         - Contract
       responses:
         200:
-          description: An array of products
-          schema:
-            type: object
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
   /event/v1/data:
     get:
       summary: Event data
@@ -74,13 +70,11 @@ paths:
         - Event
       responses:
         200:
-          description: An array of products
-          schema:
-            type: object
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
   /transaction/v1/data:
     post:
       summary: transaction data
@@ -96,13 +90,11 @@ paths:
         - Transaction
       responses:
         200:
-          description: An array of products
-          schema:
-            type: object
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
     get:
       summary: transaction data
       description: | 
@@ -110,20 +102,18 @@ paths:
       parameters: 
         - name: txHash
           in: query
-          description: test
+          description: txHash
           required: true
           type: string
       tags:
         - Transaction
       responses:
         200:
-          description: An array of products
-          schema:
-            type: object
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
   /ethereum/v1/compilers:
     get:
       summary: Ethereum compilers
@@ -133,13 +123,11 @@ paths:
         - Ethereum
       responses:
         200:
-          description: An array of support compilers
-          schema:
-            $ref: '#/definitions/Compiler'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
   /ethereum/v1/contract:
     post:
       summary: Deploy contract
@@ -147,15 +135,169 @@ paths:
         Deploy contract to Ethereum
       tags: 
         - Ethereum
+      parameters: 
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SourceCode'
       responses:
         200:
-          description: An array of contract id
-          schema:
-            type: string
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+  /ethereum/v1/coinbase:
+    get:
+      summary: Ethereum coinbase
+      description: |
+        Get Ethereum coinbase
+      tags:
+        - Ethereum
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+  /ethereum/v1/balance:
+    get:
+      summary: Ethereum account balance
+      description: |
+        Get Ethereum account balance
+      tags:
+        - Ethereum
+      parameters: 
+        - name: address
+          in: query
+          description: address
+          required: false
+          type: string
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+  /ethereum/v1/transactionReceipt:
+    get:
+      summary: Ethereum transaction receipt
+      description: |
+        Get Ethereum transaction receipt
+      tags:
+        - Ethereum
+      parameters: 
+        - name: transactionHash
+          in: query
+          description: transactionHash
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+  /ethereum/v1/estimateGas:
+    get:
+      summary: Ethereum estimate gas
+      description: |
+        Get Ethereum estimate gas
+      tags:
+        - Ethereum
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+  /ethereum/v1/gasPrice:
+    get:
+      summary: Ethereum gas price
+      description: |
+        Get Ethereum gas price
+      tags:
+        - Ethereum
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+  /ethereum/v1/blockNumber:
+    get:
+      summary: Ethereum block number
+      description: |
+        Get Ethereum block number
+      tags:
+        - Ethereum
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+  /ethereum/v1/hashrate:
+    get:
+      summary: Ethereum hashrate
+      description: |
+        Get Ethereum hashrate
+      tags:
+        - Ethereum
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+  /ethereum/v1/blockInfo:
+    get:
+      summary: Ethereum block info
+      description: |
+        Get Ethereum block info
+      tags:
+        - Ethereum
+      parameters: 
+        - name: block
+          in: query
+          description: block number or block hash
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+  /ethereum/v1/blockTransactionCount:
+    get:
+      summary: Ethereum block transaction count
+      description: |
+        Get Ethereum block transaction count
+      tags:
+        - Ethereum
+      parameters: 
+        - name: block
+          in: query
+          description: block number or string
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
 definitions:
   Contract:
     type: object
@@ -190,6 +332,11 @@ definitions:
     type: object
     properties:
       compiler:
+        type: string
+  SourceCode:
+    type: object
+    properties:
+      sourceCode:
         type: string
   Error:
     type: object
