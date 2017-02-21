@@ -21,14 +21,14 @@ var LATEST = 'lastest';
 /**
  * GET web3 compilers
  */
-router.get('/v1/compilers', function (req, res, next) {
+router.get('/compilers', function (req, res, next) {
     res.json({'compiler': ethereumController.getCompilers()});
 });
 
 /**
- * POST deploy solidity contract
+ * POST deploy solidity contracts
  */
-router.post('/v1/contract', function (req, res, next) {
+router.post('/contracts', function (req, res, next) {
     if (req.body.sourceCode !== undefined && req.body.sourceCode !== null && req.body.sourceCode !== '') {
     	var sourceCode = req.body.sourceCode;
         contractController.deployContract(sourceCode).then(function(ids){
@@ -43,14 +43,14 @@ router.post('/v1/contract', function (req, res, next) {
 /**
  * GET ethereum coinbase
  */
-router.get('/v1/coinbase', function (req, res, next) {
+router.get('/coinbase', function (req, res, next) {
     res.json({'data': {'coinbase': ethereumController.getCoinbase()}});
 });
 
 /**
  * GET ethereum account balance
  */
-router.get('/v1/balance', function (req, res, next) {
+router.get('/balance', function (req, res, next) {
     var coinbase = ethereumController.getCoinbase();
     if (req.query.address !== null && req.query.address !== '' && req.query.address !== undefined) {
         coinbase = req.query.address;
@@ -63,7 +63,7 @@ router.get('/v1/balance', function (req, res, next) {
  * POST send transaction
  * https://github.com/ethereum/wiki/wiki/JavaScript-API#web3ethsendtransaction
  */
-router.post('/v1/transaction', function (req, res, next) {
+router.post('/transaction', function (req, res, next) {
     // TODO: init gas maximum
     web3.eth.sendTransaction(
         {
@@ -88,7 +88,7 @@ router.post('/v1/transaction', function (req, res, next) {
  * GET transactionReceipt
  * https://github.com/ethereum/wiki/wiki/JavaScript-API#web3ethgettransactionreceipt
  */
-router.get('/v1/transactionReceipt', function (req, res, next) {
+router.get('/transactionReceipt', function (req, res, next) {
     var transactionHash = req.query.transactionHash;
     if (transactionHash !== null && transactionHash !== '' && transactionHash !== undefined) {
         res.json({'data': web3.eth.getTransactionReceipt(transactionHash)});
@@ -100,7 +100,7 @@ router.get('/v1/transactionReceipt', function (req, res, next) {
  * GET estimate gas
  * https://github.com/ethereum/wiki/wiki/JavaScript-API#web3ethestimategas
  */
-router.get('/v1/estimateGas', function (req, res, next) {
+router.get('/estimateGas', function (req, res, next) {
     var result = web3.eth.estimateGas({
         to: req.query.to,
         data: req.query.data
@@ -112,7 +112,7 @@ router.get('/v1/estimateGas', function (req, res, next) {
  * GET gas price
  * https://github.com/ethereum/wiki/wiki/JavaScript-API#web3ethgasprice
  */
-router.get('/v1/gasPrice', function (req, res, next) {
+router.get('/gasPrice', function (req, res, next) {
     var gasPrice = web3.eth.gasPrice;
     res.json({'data': {'gasPrice': gasPrice.toString(10)}});
 });
@@ -121,7 +121,7 @@ router.get('/v1/gasPrice', function (req, res, next) {
  * GET current block number
  * https://github.com/ethereum/wiki/wiki/JavaScript-API#web3ethblocknumber
  */
-router.get('/v1/blockNumber', function (req, res, next) {
+router.get('/blockNumber', function (req, res, next) {
     var blockNumber = web3.eth.blockNumber; 
     res.json({'data': {'blockNumber': blockNumber}});
 });
@@ -130,7 +130,7 @@ router.get('/v1/blockNumber', function (req, res, next) {
  * GET hashrate
  * https://github.com/ethereum/wiki/wiki/JavaScript-API#web3ethhashrate
  */
-router.get('/v1/hashrate', function (req, res, next) {
+router.get('/hashRate', function (req, res, next) {
     var hashrate = web3.eth.hashrate;
     res.json({'data': {'hashrate': hashrate}});
 });
@@ -139,7 +139,7 @@ router.get('/v1/hashrate', function (req, res, next) {
  * GET block info
  * https://github.com/ethereum/wiki/wiki/JavaScript-API#web3ethgetblock
  */
-router.get('/v1/blockInfo', function (req, res, next) {
+router.get('/blockInfo', function (req, res, next) {
     var blockHashOrBlockNumber = req.query.block;
     if ((blockHashOrBlockNumber !== null && blockHashOrBlockNumber !== '' && blockHashOrBlockNumber !== undefined) ||
         Number.isInteger(blockNumberOrString)) {
@@ -151,7 +151,7 @@ router.get('/v1/blockInfo', function (req, res, next) {
 /**
  * GET block transaction count
  */
-router.get('/v1/blockTransactionCount', function (req, res, next) {
+router.get('/blockTransactionCount', function (req, res, next) {
     var blockNumberOrString = req.query.block;
     if (Number.isInteger(blockNumberOrString) || 
         blockNumberOrString === 'PENDING' || 

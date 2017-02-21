@@ -9,10 +9,9 @@ var index = require('./routes/index');
 // TODO 這邊要加上 whitelist 來控管誰可以對這個 enode 下指令
 var ethereum = require('./routes/ethereum');
 var contract = require('./routes/contract');
-var event = require('./routes/event');
-var transaction = require('./routes/transaction');
 
 var app = express();
+var version = '/v1/eth';
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -31,10 +30,8 @@ app.use('/swagger', express.static(path.join(__dirname, 'swagger')));
 // for web page
 app.use('/', index);
 // for rest APIs
-app.use('/contract', contract);
-app.use('/ethereum', ethereum);
-app.use('/event', event);
-app.use('/transaction', transaction);
+app.use(version + '/contract', contract);
+app.use(version, ethereum);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
