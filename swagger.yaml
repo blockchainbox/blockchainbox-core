@@ -9,11 +9,11 @@ host: localhost:3000
 schemes:
   - http
 # will be prefixed to all paths
-basePath: /
+basePath: /v1
 produces:
   - application/json
 paths:
-  /contract/v1/info:
+  /eth/contract/info:
     get:
       summary: Contract Info
       description: |
@@ -25,6 +25,7 @@ paths:
           required: true
           type: number
           format: double
+          default: 18
       tags:
         - Contract
       responses:
@@ -34,7 +35,7 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /contract/v1/event:
+  /eth/contract/events:
     get:
       summary: Contract Event Info
       description: |
@@ -46,6 +47,7 @@ paths:
           required: true
           type: number
           format: double
+          default: 19
       tags:
         - Contract
       responses:
@@ -55,19 +57,21 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /event/v1/data:
+  /eth/contract/functions:
     get:
-      summary: Event data
+      summary: Contract Function Info
       description: |
-        Get contract event data
-      parameters: 
-        - name: txHash
+        Get contract event info by contract function id
+      parameters:
+        - name: contractFunctionId
           in: query
-          description: test
+          description: Load by contractFunctionId.
           required: true
-          type: string
+          type: number
+          format: double
+          default: 18
       tags:
-        - Event
+        - Contract
       responses:
         200:
           description: Success
@@ -75,7 +79,28 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /transaction/v1/data:
+  /eth/contract/event/data:
+    get:
+      summary: Event data
+      description: |
+        Get contract event data
+      parameters: 
+        - name: txHash
+          in: query
+          description: txHash
+          required: true
+          type: string
+          default: 'e455bf8ea6e7463a1046a0b52804526e119b4bf5136279614e0b1e8e296a4e2d'
+      tags:
+        - Contract
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+  /eth/contract/tx:
     post:
       summary: transaction data
       description: |
@@ -87,7 +112,7 @@ paths:
           schema:
             $ref: '#/definitions/TransactionData'
       tags:
-        - Transaction
+        - Contract
       responses:
         200:
           description: Success
@@ -105,8 +130,9 @@ paths:
           description: txHash
           required: true
           type: string
+          default: 'e455bf8ea6e7463a1046a0b52804526e119b4bf5136279614e0b1e8e296a4e2d'
       tags:
-        - Transaction
+        - Contract
       responses:
         200:
           description: Success
@@ -114,7 +140,7 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /ethereum/v1/compilers:
+  /eth/compilers:
     get:
       summary: Ethereum compilers
       description: |
@@ -128,7 +154,7 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /ethereum/v1/contract:
+  /eth/contracts:
     post:
       summary: Deploy contract
       description: |
@@ -148,7 +174,7 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /ethereum/v1/coinbase:
+  /eth/coinbase:
     get:
       summary: Ethereum coinbase
       description: |
@@ -162,7 +188,7 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /ethereum/v1/balance:
+  /eth/balance:
     get:
       summary: Ethereum account balance
       description: |
@@ -182,7 +208,7 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /ethereum/v1/transactionReceipt:
+  /eth/transactionReceipt:
     get:
       summary: Ethereum transaction receipt
       description: |
@@ -195,6 +221,7 @@ paths:
           description: transactionHash
           required: true
           type: string
+          default: '0x271a4efee9782e6b18372a637aec0225fc6ce534a2eecd094fb5bf832a51b6df'
       responses:
         200:
           description: Success
@@ -202,7 +229,7 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /ethereum/v1/estimateGas:
+  /eth/estimateGas:
     get:
       summary: Ethereum estimate gas
       description: |
@@ -216,7 +243,7 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /ethereum/v1/gasPrice:
+  /eth/gasPrice:
     get:
       summary: Ethereum gas price
       description: |
@@ -230,7 +257,7 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /ethereum/v1/blockNumber:
+  /eth/blockNumber:
     get:
       summary: Ethereum block number
       description: |
@@ -244,11 +271,11 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /ethereum/v1/hashrate:
+  /eth/hashRate:
     get:
-      summary: Ethereum hashrate
+      summary: Ethereum hash rate
       description: |
-        Get Ethereum hashrate
+        Get Ethereum hash rate
       tags:
         - Ethereum
       responses:
@@ -258,7 +285,7 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /ethereum/v1/blockInfo:
+  /eth/blockInfo:
     get:
       summary: Ethereum block info
       description: |
@@ -278,7 +305,7 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /ethereum/v1/blockTransactionCount:
+  /eth/blockTransactionCount:
     get:
       summary: Ethereum block transaction count
       description: |
@@ -299,35 +326,24 @@ paths:
         500:
           description: Internal server error
 definitions:
-  Contract:
-    type: object
-    properties:
-      product_id:
-        type: string
-        description: Unique identifier representing a specific product for a given latitude & longitude. For example, uberX in San Francisco will have a different product_id than uberX in Los Angeles.
-      description:
-        type: string
-        description: Description of product.
-      display_name:
-        type: string
-        description: Display name of product.
-      capacity:
-        type: string
-        description: Capacity of product. For example, 4 people.
-      image:
-        type: string
-        description: Image URL representing the product.
   TransactionData:
     type: object
     properties:
       contractId:
         type: integer
         format: int32
+        example: 18
       contractFunctionId:
         type: integer
         format: int32
+        example: 18
       data:
-        type: string
+        type: array
+        items:
+          type: string
+        example:
+          - "foo"
+          - "bar"
   Compiler:
     type: object
     properties:
@@ -338,11 +354,4 @@ definitions:
     properties:
       sourceCode:
         type: string
-  Error:
-    type: object
-    properties:
-      code:
-        type: integer
-        format: int32
-      message:
-        type: string
+        example: 'contract ProofOfTransaction {bytes32 public dataHash;mapping (string => bytes32) dataHashMap;event setDataHashEvent(address from, string txHash, bytes32 dataHash, uint time);event getDataHashEvent(address from, string txHash, bytes32 dataHash, uint time);function setData(string txHash, string data) {dataHash = sha3(data);dataHashMap[txHash] = dataHash;setDataHashEvent(msg.sender, txHash, dataHash, now);}function getDataHash(string txHash) returns (bytes32) {dataHash = dataHashMap[txHash];getDataHashEvent(msg.sender, txHash, dataHash, now);if (dataHash == 0) {return "";} else {return dataHash;}}}'
