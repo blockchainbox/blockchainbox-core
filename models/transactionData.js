@@ -24,6 +24,10 @@ TransactionData.prototype.read = function(txHash) {
     return pool.query('SELECT * FROM transactiondata WHERE txHash = $1', [txHash]);
 };
 
+TransactionData.prototype.readByTransactionHash(transactionHash) {
+    return pool.query('SELECT * FROM transactiondata WHERE transactionHash = $1', [transactionHash]);
+};
+
 // TODO re-write here
 TransactionData.prototype.create = function(entity) {
     return pool.query("SELECT nextval(pg_get_serial_sequence('transactiondata', 'txid')) as txId;").then(function(result) {

@@ -5,7 +5,9 @@ var contractEvent = require('../models/contractEvent.js');
 var contractController = require('../controllers/contractController.js');
 var transactionData = require('../models/transactionData.js');
 var eventData = require('../models/eventData.js');
+var webhookData = require('../models/webhookData.js');
 var sqsHelper = require('../helpers/aws/sqsHelper.js');
+var request = require('request');
 var router = express.Router();
 
 /**
@@ -91,7 +93,11 @@ router.post('/tx', function(req, res, next) {
 	var contractId = req.body.contractId;
 	var contractFunctionId = req.body.contractFunctionId;
 	var data = req.body.data;
-	transactionData.create({"data": JSON.stringify(data)}).then(function (txHash) {
+	var entity = {
+		"contractFunctionId": contractFunctionId, 
+		"data": JSON.stringify(data)
+	};
+	transactionData.create(entity).then(function (txHash) {
 		var message = {
 			"txHash": txHash,
 			"contractId": contractId,
@@ -142,6 +148,44 @@ router.get('/event/data', function(req, res, next) {
 		} else {
 			res.json({'error': {'code': 212, 'message': 'empty data'}});
 		}
+	});
+});
+
+/**
+ * POST set contract webhooks
+ * Support contractId, contractFunctionId, contractEventId
+ * @required contractId
+ * @required url
+ */
+router.put('/webhooks', function(req, res, next) {
+	if (req.body.contractId === undefined) {
+		res.json({'error': {'code': 201, 'message': 'contractId is null'}});
+	}
+	if (req.body.hook === undefined) {
+		res.json({'error': {'code': 215, 'message': 'empth webhook'}});
+	}
+	request.post(req.query.url, function (error, response, body) {
+	  	if (response && response.statusCode == 200) {
+	  		var contractFunctionId = (req.body.contractFunctionId === undefined) ? 
+	  			null : req.body.contractFunctionId;
+			var contractEventId = (req.body.contractEventId === undefined) ? 
+				null : req.body.contractEventId;
+			var entity = {
+				'contractId': req.body.contractId,
+				'contractFunctionId': contractFunctionId,
+				'contractEventId': contractEventId,
+				'url': req.body.hook
+			}
+			webhookData.create(entity).then(function(result) {
+				var id = result.rows[0].id;
+				res.json({'data': {'id' : id}});
+			}).catch(function(err) {
+				console.log(err.message, err.stack);
+				res.json({'error': {'code': 204, 'message': 'error on put webhooks'}});
+			});
+	  	} else {
+	  		res.json({'error': {'code': 220, 'message': 'webhook error, statusCode: ' + response.statusCode}});
+	  	}
 	});
 });
 

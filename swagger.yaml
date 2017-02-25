@@ -140,6 +140,26 @@ paths:
           description: Bad request
         500:
           description: Internal server error
+  /eth/contract/webhooks:
+    put:
+      summary: create webhook on contract functions/events
+      description: |
+        Create webhook listen on contract functions/events
+      parameters: 
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/WebhookData'
+      tags:
+        - Contract
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
   /eth/compilers:
     get:
       summary: Ethereum compilers
@@ -150,6 +170,8 @@ paths:
       responses:
         200:
           description: Success
+          schema:
+            $ref: '#/definitions/Compiler'
         400:
           description: Bad request
         500:
@@ -325,6 +347,40 @@ paths:
           description: Bad request
         500:
           description: Internal server error
+  /health:
+    get:
+      summary: Blockchainbox service health check
+      description: |
+        Get health of Blockchainbox
+      tags:
+        - Health
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+  /health/webhooks:
+    get:
+      summary: Check webhook response
+      description: |
+        Get response of webhook url
+      tags:
+        - Health
+      parameters: 
+        - name: url
+          in: query
+          description: webhook url
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
 definitions:
   TransactionData:
     type: object
@@ -344,11 +400,31 @@ definitions:
         example:
           - "foo"
           - "bar"
+  WebhookData:
+    type: object
+    properties:
+      contractId:
+        type: integer
+        format: int32
+        example: 18
+      contractFunctionId:
+        type: integer
+        format: int32
+        example: 
+      contractEventId:
+        type: integer
+        format: int32
+        example: 19
+      url:
+        type: string
+        example: 'http://www.example.com'
   Compiler:
     type: object
     properties:
       compiler:
-        type: string
+        type: array
+        items: 
+          type: string
   SourceCode:
     type: object
     properties:

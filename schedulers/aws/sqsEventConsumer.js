@@ -50,6 +50,13 @@ var consumer = Consumer.create({
 									};
 									eventData.create(entity).then(function(result){
 										console.log('[EVENTDATA] CREATE');
+										var message = {
+											"contractEventId": eventArray[eventInfo.event],
+											"transactionHash": eventInfo.transactionHash
+										}
+										sqsHelper.send(JSON.stringify(message),
+						                    process.env.AWS_WEBHOOK_QUEUE_URL, 10,
+						                    'webhook');
 									}).catch(function(err) {
 										console.log('[EVENTDATA] CREATE failed', err);
 									});

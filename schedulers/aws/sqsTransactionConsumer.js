@@ -16,18 +16,19 @@ AWS.config.update({
  
 var consumer = Consumer.create({
 	queueUrl: process.env.AWS_TRANSACTION_QUEUE_URL,
-  	handleMessage: function (message, done) {
-  		var data = JSON.parse(message.Body);
-  		var entity = {
-  			"contractId": data.contractId,
-  			"contractFunctionId": data.contractFunctionId,
-  			"data": data.data,
-  			"txHash": data.txHash
-  		};
-  		contractController.setContractFunctionData(entity);
-  		done();
-  	},
-  	sqs: new AWS.SQS()
+	handleMessage: function (message, done) {
+    web3.personal.unlockAccount(web3.eth.coinbase, process.env.COINBASE_PASSWORD, 1000)
+		var data = JSON.parse(message.Body);
+		var entity = {
+			"contractId": data.contractId,
+			"contractFunctionId": data.contractFunctionId,
+			"data": data.data,
+			"txHash": data.txHash
+		};
+		contractController.setContractFunctionData(entity);
+		done();
+	},
+	sqs: new AWS.SQS()
 });
 
 consumer.on('error', function (err) {

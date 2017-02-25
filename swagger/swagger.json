@@ -195,6 +195,36 @@
                 }
             }
         },
+        "/eth/contract/webhooks": {
+            "put": {
+                "summary": "create webhook on contract functions/events",
+                "description": "Create webhook listen on contract functions/events\n",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/WebhookData"
+                        }
+                    }
+                ],
+                "tags": [
+                    "Contract"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
         "/eth/compilers": {
             "get": {
                 "summary": "Ethereum compilers",
@@ -204,7 +234,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/Compiler"
+                        }
                     },
                     "400": {
                         "description": "Bad request"
@@ -461,6 +494,55 @@
                     }
                 }
             }
+        },
+        "/health": {
+            "get": {
+                "summary": "Blockchainbox service health check",
+                "description": "Get health of Blockchainbox\n",
+                "tags": [
+                    "Health"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/health/webhooks": {
+            "get": {
+                "summary": "Check webhook response",
+                "description": "Get response of webhook url\n",
+                "tags": [
+                    "Health"
+                ],
+                "parameters": [
+                    {
+                        "name": "url",
+                        "in": "query",
+                        "description": "webhook url",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -489,11 +571,38 @@
                 }
             }
         },
+        "WebhookData": {
+            "type": "object",
+            "properties": {
+                "contractId": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 18
+                },
+                "contractFunctionId": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": null
+                },
+                "contractEventId": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 19
+                },
+                "url": {
+                    "type": "string",
+                    "example": "http://www.example.com"
+                }
+            }
+        },
         "Compiler": {
             "type": "object",
             "properties": {
                 "compiler": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },

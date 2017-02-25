@@ -53,6 +53,13 @@ var consumer = Consumer.create({
                 sqsHelper.send(JSON.stringify(message),
                     process.env.AWS_EVENT_QUEUE_URL, 10,
                     'event');
+                var webhookMessage = {
+                    "contractFunctionId": data.contractFunctionId,
+                    "transactionHash": data.transactionHash
+                }
+                sqsHelper.send(JSON.stringify(webhookMessage),
+                    process.env.AWS_WEBHOOK_QUEUE_URL, 10,
+                    'webhook');
             }).catch(function (err) {
                 console.log(err.message, err.stack);
             });

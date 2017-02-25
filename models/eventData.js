@@ -16,6 +16,10 @@ EventData.prototype.readByTxHash = function(txHash) {
 		[txHash, CONFIRMED]);
 }
 
+EventData.prototype.readByTransactionHash(transactionHash) {
+    return pool.query('SELECT * FROM eventdata WHERE transactionHash = $1', [transactionHash]);
+};
+
 EventData.prototype.create = function(entity) {
     return pool.query('INSERT INTO eventdata '
     	+ '(contractEventId, transactionHash, event, data, blocknumber, blockhash, address, createTimestamp) '
