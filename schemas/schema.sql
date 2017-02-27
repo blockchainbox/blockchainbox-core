@@ -75,3 +75,16 @@ CREATE TABLE IF NOT EXISTS EventData (
 
 ALTER TABLE EventData
   OWNER TO root;
+
+CREATE TABLE IF NOT EXISTS WebhookData (
+	id serial primary key,
+	contractId integer,
+	contractEventId integer,
+	contractFunctionId integer, -- have PENDING, CONFIRMED, etc
+	url text,
+	createTimestamp timestamp with time zone,
+	status boolean
+);
+
+ALTER TABLE WebhookData
+  OWNER TO root;

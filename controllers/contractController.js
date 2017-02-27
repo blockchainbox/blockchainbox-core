@@ -113,6 +113,7 @@ ContractController.prototype.setContractFunctionData = function(entity) {
 
 					var message = {
 						"contractId": entity.contractId,
+						"contractFunctionId": entity.contractFunctionId,
 						"txHash": entity.txHash,
 						"transactionHash": transactionHash
 					}

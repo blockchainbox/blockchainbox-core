@@ -153,7 +153,7 @@ router.get('/blockInfo', function (req, res, next) {
  */
 router.get('/blockTransactionCount', function (req, res, next) {
     var blockNumberOrString = req.query.block;
-    if (Number.isInteger(blockNumberOrString) || 
+    if (Number.isInteger(parseInt(blockNumberOrString)) || 
         blockNumberOrString === 'PENDING' || 
         blockNumberOrString === 'EARLIEST' || 
         blockNumberOrString === 'LATEST') {

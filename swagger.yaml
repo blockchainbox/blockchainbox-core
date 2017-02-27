@@ -13,7 +13,7 @@ basePath: /v1
 produces:
   - application/json
 paths:
-  /eth/contract/info:
+  /eth/contract:
     get:
       summary: Contract Info
       description: |
@@ -79,7 +79,7 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /eth/contract/event/data:
+  /eth/contract/eventData:
     get:
       summary: Event data
       description: |
@@ -88,9 +88,24 @@ paths:
         - name: txHash
           in: query
           description: txHash
-          required: true
+          required: false
           type: string
           default: 'e455bf8ea6e7463a1046a0b52804526e119b4bf5136279614e0b1e8e296a4e2d'
+        - name: transactionHash
+          in: query
+          description: transactionHash
+          required: false
+          type: string
+        - name: contractId
+          in: query
+          description: contract id
+          required: false
+          type: integer
+        - name: contractEventId
+          in: query
+          description: contract event id
+          required: false
+          type: integer
       tags:
         - Contract
       responses:
@@ -100,7 +115,7 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /eth/contract/tx:
+  /eth/contract/transaction:
     post:
       summary: transaction data
       description: |
@@ -120,6 +135,7 @@ paths:
           description: Bad request
         500:
           description: Internal server error
+  /eth/contract/transactionData:
     get:
       summary: transaction data
       description: | 
@@ -128,9 +144,44 @@ paths:
         - name: txHash
           in: query
           description: txHash
-          required: true
+          required: false
           type: string
           default: 'e455bf8ea6e7463a1046a0b52804526e119b4bf5136279614e0b1e8e296a4e2d'
+        - name: transactionHash
+          in: query
+          description: transactionHash
+          required: false
+          type: string
+        - name: contractId
+          in: query
+          description: contract id
+          required: false
+          type: integer
+        - name: contractFunctionId
+          in: query
+          description: contract function id
+          required: false
+          type: integer
+      tags:
+        - Contract
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+  /eth/contract/webhooks:
+    put:
+      summary: create webhook on contract functions/events
+      description: |
+        Create webhook listen on contract functions/events
+      parameters: 
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/WebhookData'
       tags:
         - Contract
       responses:
@@ -150,6 +201,8 @@ paths:
       responses:
         200:
           description: Success
+          schema:
+            $ref: '#/definitions/Compiler'
         400:
           description: Bad request
         500:
@@ -325,6 +378,40 @@ paths:
           description: Bad request
         500:
           description: Internal server error
+  /health:
+    get:
+      summary: Blockchainbox service health check
+      description: |
+        Get health of Blockchainbox
+      tags:
+        - Health
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+  /health/webhooks:
+    get:
+      summary: Check webhook response
+      description: |
+        Get response of webhook url
+      tags:
+        - Health
+      parameters: 
+        - name: url
+          in: query
+          description: webhook url
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
 definitions:
   TransactionData:
     type: object
@@ -344,11 +431,30 @@ definitions:
         example:
           - "foo"
           - "bar"
+  WebhookData:
+    type: object
+    properties:
+      contractId:
+        type: integer
+        format: int32
+        example: 18
+      contractFunctionId:
+        type: integer
+        format: int32
+      contractEventId:
+        type: integer
+        format: int32
+        example: 19
+      url:
+        type: string
+        example: 'http://www.example.com'
   Compiler:
     type: object
     properties:
       compiler:
-        type: string
+        type: array
+        items: 
+          type: string
   SourceCode:
     type: object
     properties:

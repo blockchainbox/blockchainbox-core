@@ -11,10 +11,24 @@ EventData.prototype.readAll = function() {
 EventData.prototype.readByTxHash = function(txHash) {
 	return pool.query('SELECT * FROM eventData WHERE transactionHash = ('
 		+ ' SELECT transactionHash FROM transactionData '
-		+ ' WHERE txHash = $1 ' 
-		+ ' AND status = $2)', 
-		[txHash, CONFIRMED]);
-}
+		+ ' WHERE txHash = $1)', 
+		[txHash]);
+};
+
+EventData.prototype.readByTransactionHash = function(transactionHash) {
+    return pool.query('SELECT * FROM eventdata WHERE transactionHash = $1', 
+    	[transactionHash]);
+};
+
+EventData.prototype.readByContractId = function(contractId) {
+	return pool.query('SELECT * FROM eventdata WHERE contractEventId IN ('
+		+ 'SELECT id FROM contractEvent WHERE contractId = $1)',
+		[contractId]);
+};
+
+EventData.prototype.readByContractEventId = function(contractEventId) {
+	return pool.query('SELECT * FROM eventdata WHERE contractEventId = $1', [contractEventId]);
+};
 
 EventData.prototype.create = function(entity) {
     return pool.query('INSERT INTO eventdata '
