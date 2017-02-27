@@ -13,7 +13,7 @@ var router = express.Router();
 /**
  * GET contract info
  */
-router.get('/info', function (req, res, next) {
+router.get('/', function (req, res, next) {
     var contractId = req.query.contractId;
     var contractInfo = null;
     var contractEventInfo = null;
@@ -80,7 +80,7 @@ router.get('/functions', function(req, res, next) {
 /**
  * POST use contract function
  */
-router.post('/tx', function(req, res, next) {
+router.post('/transaction', function(req, res, next) {
 	if (req.body.contractId === undefined) {
 		res.json({'error': {'code': 201, 'message': 'contractId is null'}});
 	}
@@ -117,38 +117,107 @@ router.post('/tx', function(req, res, next) {
 /**
  * GET function transaction status
  */
-router.get('/tx', function(req, res, next){
-	if (req.query.txHash === undefined) {
+router.get('/transactionData', function(req, res, next){
+	if (req.query.txHash) {
+		transactionData.read(req.query.txHash).then(function(transactionDataResult) {
+			if (transactionDataResult.rowCount > 0) {
+				res.json({'data': transactionDataResult.rows});
+			} else {
+				res.json({'error': {'code': 212, 'message': 'empty data'}});
+			}
+		}).catch(function(err) {
+			console.log(err.message, err.stack);
+			res.json({'error': {'code': 213, 'message': 'error on load data'}});
+		});
+	} else if (req.query.transactionHash) {
+		transactionData.readByTransactionHash(req.query.transactionHash).then(function(transactionDataResult) {
+			if (transactionDataResult.rowCount > 0) {
+				res.json({'data': transactionDataResult.rows});
+			} else {
+				res.json({'error': {'code': 212, 'message': 'empty data'}});
+			}
+		}).catch(function(err) {
+			console.log(err.message, err.stack);
+			res.json({'error': {'code': 213, 'message': 'error on load data'}});
+		});
+	} else if (req.query.contractId) {
+		transactionData.readByContractId(req.query.contractId).then(function(transactionDataResult) {
+			if (transactionDataResult.rowCount > 0) {
+				res.json({'data': transactionDataResult.rows});
+			} else {
+				res.json({'error': {'code': 212, 'message': 'empty data'}});
+			}
+		}).catch(function(err) {
+			console.log(err.message, err.stack);
+			res.json({'error': {'code': 213, 'message': 'error on load data'}});
+		});
+	} else if (req.query.contractFunctionId) {
+		transactionData.readByContractFunctionId(req.query.contractFunctionId).then(function(transactionDataResult) {
+			if (transactionDataResult.rowCount > 0) {
+				res.json({'data': transactionDataResult.rows});
+			} else {
+				res.json({'error': {'code': 212, 'message': 'empty data'}});
+			}
+		}).catch(function(err) {
+			console.log(err.message, err.stack);
+			res.json({'error': {'code': 213, 'message': 'error on load data'}});
+		});
+	} else {
 		res.json({'error': {'code': 211, 'message': 'txHash is null'}});
 	}
-	var txHash = req.query.txHash;
-	transactionData.read(txHash).then(function(transactionDataResult) {
-		if (transactionDataResult.rowCount > 0) {
-			res.json({'data': transactionDataResult.rows[0]});
-		} else {
-			res.json({'error': {'code': 212, 'message': 'empty data'}});
-		}
-	}).catch(function(err) {
-		console.log(err.message, err.stack);
-		res.json({'error': {'code': 213, 'message': 'error on load data'}});
-	});
 });
 
 /**
  * GET load event data 
  */
-router.get('/event/data', function(req, res, next) {
-	if (req.query.txHash === undefined) {
-		res.json({'error': {'code': 211, 'message': 'txHash is null'}});
+router.get('/eventData', function(req, res, next) {
+	if (req.query.txHash) {
+		eventData.readByTxHash(req.query.txHash).then(function(eventDataResult) {
+			if (eventDataResult.rowCount > 0) {
+				res.json({'data': eventDataResult.rows});
+			} else {
+				res.json({'error': {'code': 212, 'message': 'empty data'}});
+			}
+		}).catch(function(err) {
+			console.log(err.message, err.stack);
+			res.json({'error': {'code': 213, 'message': 'error on load data'}});
+		});
+	} else if (req.query.transactionHash) {
+		eventData.readByTransactionHash(req.query.transactionHash).then(function(eventDataResult) {
+			if (eventDataResult.rowCount > 0) {
+				res.json({'data': eventDataResult.rows});
+			} else {
+				res.json({'error': {'code': 212, 'message': 'empty data'}});
+			}
+		}).catch(function(err) {
+			console.log(err.message, err.stack);
+			res.json({'error': {'code': 213, 'message': 'error on load data'}});
+		});
+	} else if (req.query.contractId) {
+		eventData.readByContractId(req.query.contractId).then(function(eventDataResult) {
+			if (eventDataResult.rowCount > 0) {
+				res.json({'data': eventDataResult.rows});
+			} else {
+				res.json({'error': {'code': 212, 'message': 'empty data'}});
+			}
+		}).catch(function(err) {
+			console.log(err.message, err.stack);
+			res.json({'error': {'code': 213, 'message': 'error on load data'}});
+		});
+	} else if (req.query.contractEventId) {
+		eventData.readByContractEventId(req.query.contractEventId).then(function(eventDataResult) {
+			if (eventDataResult.rowCount > 0) {
+				res.json({'data': eventDataResult.rows});
+			} else {
+				res.json({'error': {'code': 212, 'message': 'empty data'}});
+			}
+		}).catch(function(err) {
+			console.log(err.message, err.stack);
+			res.json({'error': {'code': 213, 'message': 'error on load data'}});
+		});
+	} else {
+		res.json({'error': {'code': 221, 'message': 'must provide a valid query parameter'}});
 	}
-	var txHash = req.query.txHash;
-	eventData.readByTxHash(txHash).then(function(result) {
-		if (result.rowCount > 0) {
-			res.json({'data': result.rows});
-		} else {
-			res.json({'error': {'code': 212, 'message': 'empty data'}});
-		}
-	});
 });
 
 /**
@@ -161,32 +230,44 @@ router.put('/webhooks', function(req, res, next) {
 	if (req.body.contractId === undefined) {
 		res.json({'error': {'code': 201, 'message': 'contractId is null'}});
 	}
-	if (req.body.hook === undefined) {
+	if (req.body.url === undefined) {
 		res.json({'error': {'code': 215, 'message': 'empth webhook'}});
 	}
-	request.post(req.query.url, function (error, response, body) {
-	  	if (response && response.statusCode == 200) {
-	  		var contractFunctionId = (req.body.contractFunctionId === undefined) ? 
-	  			null : req.body.contractFunctionId;
-			var contractEventId = (req.body.contractEventId === undefined) ? 
-				null : req.body.contractEventId;
-			var entity = {
-				'contractId': req.body.contractId,
-				'contractFunctionId': contractFunctionId,
-				'contractEventId': contractEventId,
-				'url': req.body.hook
-			}
-			webhookData.create(entity).then(function(result) {
-				var id = result.rows[0].id;
-				res.json({'data': {'id' : id}});
-			}).catch(function(err) {
-				console.log(err.message, err.stack);
-				res.json({'error': {'code': 204, 'message': 'error on put webhooks'}});
-			});
-	  	} else {
-	  		res.json({'error': {'code': 220, 'message': 'webhook error, statusCode: ' + response.statusCode}});
-	  	}
-	});
+	request.post({
+			'url': req.body.url,
+			'method': 'POST',
+			'header': {
+				'content-type': 'application/json'
+			},
+			'json': {} 
+		},
+		function (error, response, body) {
+		  	if (response && response.statusCode == 200) {
+		  		var contractFunctionId = (req.body.contractFunctionId === undefined) ? 
+		  			null : req.body.contractFunctionId;
+				var contractEventId = (req.body.contractEventId === undefined) ? 
+					null : req.body.contractEventId;
+				var entity = {
+					'contractId': req.body.contractId,
+					'contractFunctionId': contractFunctionId,
+					'contractEventId': contractEventId,
+					'url': req.body.url
+				}
+				webhookData.create(entity).then(function(result) {
+					if (result.rowCount > 0) {
+						res.json({'data': {'id' : result.rows[0].id}});
+					} else {
+						res.json({'error': {'code': 204, 'message': 'webhook url already exists'}});
+					}
+				}).catch(function(err) {
+					console.log(err.message, err.stack);
+					res.json({'error': {'code': 204, 'message': 'error on put webhooks'}});
+				});
+		  	} else {
+		  		res.json({'error': {'code': 220, 'message': 'webhook error, statusCode: ' + response.statusCode}});
+		  	}
+		}
+	);
 });
 
 module.exports = router;

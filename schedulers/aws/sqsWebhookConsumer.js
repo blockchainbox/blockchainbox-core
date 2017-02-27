@@ -1,6 +1,6 @@
 var Consumer = require('sqs-consumer');
 var AWS = require('aws-sdk');
-var webhoodData = require('../../models/webhoodData.js');
+var webhookData = require('../../models/webhookData.js');
 var transactionData = require('../../models/transactionData.js');
 var eventData = require('../../models/eventData.js');
 var requestHelper = require('../../helpers/requestHelper.js');
@@ -16,14 +16,16 @@ var consumer = Consumer.create({
 	queueUrl: process.env.AWS_WEBHOOK_QUEUE_URL,
 	handleMessage: function (message, done) {
     var data = JSON.parse(message.Body);
+    console.log('[WEBHOOK] receive data: ', data);
     var transactionHash = data.transactionHash;
     // send by contractFunctionId
     if (data.contractFunctionId) {
       transactionData.readByTransactionHash(transactionHash).then(function(result) {
         result.rows.forEach(function(transactionDataDetail) {
-          webhoodData.readByContractFunctionId(data.contractFunctionId).then(function(webhookDataResult) {
-            if (webhookDataResult.row.count > 0) {
+          webhookData.readByContractFunctionId(data.contractFunctionId).then(function(webhookDataResult) {
+            if (webhookDataResult.rowCount > 0) {
               webhookDataResult.rows.forEach(function(item){
+                console.log('[CONTRACT FUNCTION WEBHOOK] url: ' + item.url + ", data: " + JSON.stringify(transactionDataDetail, null, 2));
                 requestHelper.post(item.url, transactionDataDetail);
               });
             }
@@ -39,9 +41,10 @@ var consumer = Consumer.create({
     if (data.contractEventId) {
       eventData.readByTransactionHash(transactionHash).then(function(result) {
         result.rows.forEach(function(eventDataDetail) {
-          webhoodData.readByContractEventId(data.contractEventId).then(function(webhookDataResult) {
-            if (webhookDataResult.row.count > 0) {
+          webhookData.readByContractEventId(data.contractEventId).then(function(webhookDataResult) {
+            if (webhookDataResult.rowCount > 0) {
               webhookDataResult.rows.forEach(function(item){
+                console.log('[CONTRACT EVENT WEBHOOK] url: ' + item.url + ", data: " + JSON.stringify(eventDataDetail, null, 2));
                 requestHelper.post(item.url, eventDataDetail);
               });
             }

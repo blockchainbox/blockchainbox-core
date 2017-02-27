@@ -24,8 +24,18 @@ TransactionData.prototype.read = function(txHash) {
     return pool.query('SELECT * FROM transactiondata WHERE txHash = $1', [txHash]);
 };
 
-TransactionData.prototype.readByTransactionHash(transactionHash) {
+TransactionData.prototype.readByTransactionHash = function(transactionHash) {
     return pool.query('SELECT * FROM transactiondata WHERE transactionHash = $1', [transactionHash]);
+};
+
+TransactionData.prototype.readByContractId = function(contractId) {
+    return pool.query('SELECT * FROM transactiondata WHERE contractFunctionId IN ('
+        + 'SELECT id FROM contractFunction WHERE contractId = $1)', 
+        [contractId]);
+};
+
+TransactionData.prototype.readByContractFunctionId = function(contractFunctionId) {
+    return pool.query('SELECT * FROM transactiondata WHERE contractFunctionId = $1', [contractFunctionId]);
 };
 
 // TODO re-write here

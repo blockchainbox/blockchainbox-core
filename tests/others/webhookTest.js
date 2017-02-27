@@ -1,3 +1,3 @@
 var requestHelper = require('../../helpers/requestHelper.js');
 
-requestHelper.post('https://www.google.comx', {"foo": "bar"});
+console.log(requestHelper.post('https://www.google.comx', {"foo": "bar"}));

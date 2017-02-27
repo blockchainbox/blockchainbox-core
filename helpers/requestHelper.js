@@ -12,11 +12,12 @@ RequestHelper.prototype.post = function(url, data) {
 			'json': data
 		}, function (error, response, body) {
 		if (!error) {
+			return true;
 	  		console.log('[WEBHOOK] url: ' + url + ', statusCode: ' + (request && response.statusCode)); // Print the response status code if a response was received
 		} else {
+			return false;
 			console.log('[WEBHOOK] error: ', error);
 		}
-	  	//console.log('body:', body); // Print the HTML for the Google homepage.
 	});
 };
 
