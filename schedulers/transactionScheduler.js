@@ -2,7 +2,7 @@ var transactionData = require('../models/transactionData.js');
 var sqsHelper = require('../helpers/aws/sqsHelper.js');
 var schedule = require('node-schedule');
 
-var job = schedule.scheduleJob('*/1 * * * *', function(){
+var job = schedule.scheduleJob('*/10 * * * *', function(){
 	transactionData.readUnfinishedTransaction().then(function(result) {
 		if (result.rowCount > 0) {
 			result.rows.forEach(function(item){
