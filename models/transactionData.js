@@ -38,6 +38,16 @@ TransactionData.prototype.readByContractFunctionId = function(contractFunctionId
     return pool.query('SELECT * FROM transactiondata WHERE contractFunctionId = $1', [contractFunctionId]);
 };
 
+
+TransactionData.prototype.readUnfinishedTransaction = function() {
+    return pool.query('SELECT transactiondata.*, contractFunction.contractId FROM transactiondata '
+        + ' LEFT JOIN contractFunction ON transactiondata.contractFunctionId = contractFunction.id '
+        + 'WHERE transactiondata.status NOT IN ($1, $2) '
+        + 'AND transactiondata.updatetimestamp < (now() - INTERVAL \'11 minutes\') '
+        + 'OR transactiondata.updatetimestamp IS null ', 
+        [TransactionData.prototype.CONFIRMED, TransactionData.prototype.FAILED]);
+}
+
 // TODO re-write here
 TransactionData.prototype.create = function(entity) {
     return pool.query("SELECT nextval(pg_get_serial_sequence('transactiondata', 'txid')) as txId;").then(function(result) {
