@@ -1,76 +1,74 @@
 {
   apps : [
     {
-      name       : "blockchainbox-core",
-      script     : "./bin/www",
-      watch      : true,
+      name          : "blockchainbox-core",
+      script        : "./bin/www",
+      watch         : true,
       env: {
-        "NODE_ENV": "development",
+        "NODE_ENV"          : "development",
         "ENODE_BASE"        : "http://localhost:8545",
         "POSTGRESQL_HOST"   : "localhost",
-        "POSTGRESQL_PORT"   : 5432,
-        "KAFKA_HOST"        : "localhost",
-        "KAFKA_PORT"        : 9092
+        "POSTGRESQL_PORT"   : 5432
       }
     },{
-      name       : "blockchainbox-core-contract-consumer",
-      script     : "./schedulers/aws/sqsContractConsumer.js",
-      watch       : true,
+      name          : "blockchainbox-core-contract-consumer",
+      script        : "./schedulers/aws/sqsContractConsumer.js",
+      watch         : true,
       env: {
-        "NODE_ENV": "development",
+        "NODE_ENV"          : "development",
         "ENODE_BASE"        : "http://localhost:8545",
         "POSTGRESQL_HOST"   : "localhost",
-        "POSTGRESQL_PORT"   : 5432,
-        "KAFKA_HOST"        : "localhost",
-        "KAFKA_PORT"        : 9092
+        "POSTGRESQL_PORT"   : 5432
       }
     },{
-      name       : "blockchainbox-core-transaction-consumer",
-      script     : "./schedulers/aws/sqsTransactionConsumer.js",
-      watch       : true,
+      name          : "blockchainbox-core-transaction-consumer",
+      script        : "./schedulers/aws/sqsTransactionConsumer.js",
+      watch         : true,
       env: {
-        "NODE_ENV": "development",
+        "NODE_ENV"          : "development",
         "ENODE_BASE"        : "http://localhost:8545",
         "POSTGRESQL_HOST"   : "localhost",
-        "POSTGRESQL_PORT"   : 5432,
-        "KAFKA_HOST"        : "localhost",
-        "KAFKA_PORT"        : 9092
+        "POSTGRESQL_PORT"   : 5432
       }
     },{
-      name       : "blockchainbox-core-transaction-receipt-consumer",
-      script     : "./schedulers/aws/sqsTransactionReceiptConsumer.js",
-      watch       : true,
+      name          : "blockchainbox-core-transaction-receipt-consumer",
+      script        : "./schedulers/aws/sqsTransactionReceiptConsumer.js",
+      watch         : true,
       env: {
-        "NODE_ENV": "development",
+        "NODE_ENV"          : "development",
         "ENODE_BASE"        : "http://localhost:8545",
         "POSTGRESQL_HOST"   : "localhost",
-        "POSTGRESQL_PORT"   : 5432,
-        "KAFKA_HOST"        : "localhost",
-        "KAFKA_PORT"        : 9092
+        "POSTGRESQL_PORT"   : 5432
       }
     },{
-      name       : "blockchainbox-core-event-consumer",
-      script     : "./schedulers/aws/sqsEventConsumer.js",
-      watch       : true,
+      name          : "blockchainbox-core-event-consumer",
+      script        : "./schedulers/aws/sqsEventConsumer.js",
+      watch         : true,
       env: {
-        "NODE_ENV": "development",
+        "NODE_ENV"          : "development",
         "ENODE_BASE"        : "http://localhost:8545",
         "POSTGRESQL_HOST"   : "localhost",
-        "POSTGRESQL_PORT"   : 5432,
-        "KAFKA_HOST"        : "localhost",
-        "KAFKA_PORT"        : 9092
+        "POSTGRESQL_PORT"   : 5432
       }
     },{
-      name       : "blockchainbox-core-webhook-consumer",
-      script     : "./schedulers/aws/sqsWebhookConsumer.js",
-      watch       : true,
+      name          : "blockchainbox-core-webhook-consumer",
+      script        : "./schedulers/aws/sqsWebhookConsumer.js",
+      watch         : true,
       env: {
-        "NODE_ENV": "development",
+        "NODE_ENV"          : "development",
         "ENODE_BASE"        : "http://localhost:8545",
         "POSTGRESQL_HOST"   : "localhost",
-        "POSTGRESQL_PORT"   : 5432,
-        "KAFKA_HOST"        : "localhost",
-        "KAFKA_PORT"        : 9092
+        "POSTGRESQL_PORT"   : 5432
+      }
+    },{
+      name          : "blockchainbox-core-transaction-scheduler",
+      script        : "./schedulers/transactionScheduler.js",
+      watch         : true,
+      env: {
+        "NODE_ENV"          : "development",
+        "ENODE_BASE"        : "http://localhost:8545",
+        "POSTGRESQL_HOST"   : "localhost",
+        "POSTGRESQL_PORT"   : 5432
       }
     }
   ]

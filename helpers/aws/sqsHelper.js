@@ -54,13 +54,13 @@ SqsHelper.prototype.send = function(messageBody, queueUrl, delaySeconds, message
         MessageGroupId: messageGroupId,
         MessageDeduplicationId: date.toString()
     };
-    console.log(params);
+    console.log('[SQS HELPER] parameters: ', params);
     sqs.sendMessage(params, function(err, data) {
         if(err) {
-             console.log(err);
+             console.log('[SQS HELPER] failed: ', err);
         } 
         else {
-             console.log( data);
+             console.log('[SQS HELPER] success: ', data);
         } 
     });
 };
@@ -79,7 +79,7 @@ SqsHelper.prototype.receive = function(queueUrl, visibilityTimeout) {
              console.log(err);
         } 
         else {
-             console.log('receive:  ' + data['Messages'][0]['Body']);
+             console.log('receive: ' + data['Messages'][0]['Body']);
         } 
     });
 };
