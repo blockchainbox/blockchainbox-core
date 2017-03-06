@@ -1,0 +1,36 @@
+apps:
+  - script: './bin/www'
+    name  : 'blockchainbox-core'
+    watch : true
+    env   :
+      NODE_ENV: development
+  - script: './schedulers/aws/sqsContractConsumer.js'
+    name  : 'blockchainbox-core-contract-consumer'
+    watch : true
+    env   :
+      NODE_ENV: development
+  - script: './schedulers/aws/sqsTransactionConsumer.js'
+    name  : 'blockchainbox-core-transaction-consumer'
+    watch : true
+    env   :
+      NODE_ENV: development
+  - script: './schedulers/aws/sqsTransactionReceiptConsumer.js'
+    name  : 'blockchainbox-core-transaction-receipt-consumer'
+    watch : true
+    env   :
+      NODE_ENV: development
+  - script: './schedulers/aws/sqsEventConsumer.js'
+    name  : 'blockchainbox-core-event-consumer'
+    watch : true
+    env   :
+      NODE_ENV: development
+  - script: './schedulers/aws/sqsWebhookConsumer.js'
+    name  : 'blockchainbox-core-webhook-consumer'
+    watch : true
+    env   :
+      NODE_ENV: development
+  - script: './schedulers/transactionScheduler.js'
+    name  : 'blockchainbox-core-transaction-scheduler'
+    watch : true
+    env   :
+      NODE_ENV: development
