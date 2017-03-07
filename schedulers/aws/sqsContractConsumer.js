@@ -2,9 +2,10 @@ var Consumer = require('sqs-consumer');
 var AWS = require('aws-sdk');
 var Web3 = require('web3');
 var contract = require('../../models/contract.js');
+var sqsHelper = require('../../helpers/aws/sqsHelper.js');
 var web3 = new Web3();
 
-web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
+web3.setProvider(new web3.providers.HttpProvider(process.env.ENODE_BASE || 'http://localhost:8545'));
  
 AWS.config.update({
     apiVersion: '2012-11-05',
@@ -36,6 +37,13 @@ var consumer = Consumer.create({
             };
             contract.updateAddress(entity).then(function(result){
               console.log('[CONTRACT UPDATE] After Contract Mined, id: ' + data.contractId + ', transactionHash: ' + instance.transactionHash + ', address: ' + instance.address);
+              var webhookMessage = {
+                "contractId": data.contractId,
+                "transactionHash": instance.transactionHash
+              }
+              sqsHelper.send(JSON.stringify(webhookMessage),
+                process.env.AWS_WEBHOOK_QUEUE_URL, 10,
+                'webhook');
             });
           } else if (!err) {
             var entity = {
