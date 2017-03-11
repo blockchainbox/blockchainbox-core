@@ -29,9 +29,14 @@ router.get('/compilers', function (req, res, next) {
  * POST deploy solidity contracts
  */
 router.post('/contracts', function (req, res, next) {
+    // TODO 這邊要加上 webhook 確認
+    var webhookUrl = '';
+    if (req.body.url !== undefined && req.body.url !== null && req.body.url !== '') {
+        webhookUrl = req.body.url;
+    }
     if (req.body.sourceCode !== undefined && req.body.sourceCode !== null && req.body.sourceCode !== '') {
     	var sourceCode = req.body.sourceCode;
-        contractController.deployContract(sourceCode).then(function(ids){
+        contractController.deployContract(sourceCode, webhookUrl).then(function(ids){
         	res.json({'data': {'contractId': ids}});
         })
     } else {

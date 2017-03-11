@@ -6,6 +6,7 @@ var contract = require('../models/contract.js');
 var contractEvent = require('../models/contractEvent.js');
 var contractFunction = require('../models/contractFunction.js');
 var transactionData = require('../models/transactionData.js');
+var webhookData = require('../models/webhookData.js');
 var sqsHelper = require('../helpers/aws/sqsHelper.js');
 
 var web3 = new Web3();
@@ -14,7 +15,7 @@ web3.setProvider(new web3.providers.HttpProvider(process.env.ENODE_BASE || 'http
 
 function ContractController() {}
 
-ContractController.prototype.deployContract = function(sourceCode) {
+ContractController.prototype.deployContract = function(sourceCode, webhookUrl) {
     return new Promise(function(resolve, reject) {
     	var result = solc.compile(sourceCode, 1);
 	    var ids = [];
@@ -35,7 +36,15 @@ ContractController.prototype.deployContract = function(sourceCode) {
 	            contract.create(contractEntity).then(function (contractId) {
 	            	console.log('[CONTRACT CREATE] id: ' + contractId);
 	                ids.push(contractId);
-	                
+	                if (webhookUrl !== ''){
+	                	var entity = {
+		                	"contractId": contractId,
+		                	"url": webhookUrl
+		                }
+		                webhookData.create(entity).then(function(result) {
+		                	console.log('[CONTRACT WEBHOOK CREATE] contractId: ' + contractid + ", webhookUrl: " + webhookUrl);
+		                });
+		            }
 	                var message = {
 	                	"contractId": contractId
 	                }
