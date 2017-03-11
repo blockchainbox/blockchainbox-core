@@ -2,9 +2,10 @@ var Consumer = require('sqs-consumer');
 var AWS = require('aws-sdk');
 var Web3 = require('web3');
 var contract = require('../../models/contract.js');
+var sqsHelper = require('../../helpers/aws/sqsHelper.js');
 var web3 = new Web3();
 
-web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
+web3.setProvider(new web3.providers.HttpProvider(process.env.ENODE_BASE || 'http://localhost:8545'));
  
 AWS.config.update({
     apiVersion: '2012-11-05',
@@ -24,6 +25,7 @@ var consumer = Consumer.create({
         var contractInstance = web3.eth.contract(contractAbi);
         var contractByteCode = '0x' + result.rows[0].bytecode;
         var gasEstimate = web3.eth.estimateGas({data: contractByteCode});
+        web3.personal.unlockAccount(web3.eth.coinbase, process.env.COINBASE_PASSWORD, 1000)
         contractInstance.new({
           from: web3.eth.coinbase,
           data: contractByteCode,  // TODO need confirm why this need '0x', and check contract is availble for use
@@ -36,6 +38,13 @@ var consumer = Consumer.create({
             };
             contract.updateAddress(entity).then(function(result){
               console.log('[CONTRACT UPDATE] After Contract Mined, id: ' + data.contractId + ', transactionHash: ' + instance.transactionHash + ', address: ' + instance.address);
+              var webhookMessage = {
+                "contractId": data.contractId,
+                "transactionHash": instance.transactionHash
+              }
+              sqsHelper.send(JSON.stringify(webhookMessage),
+                process.env.AWS_WEBHOOK_QUEUE_URL, 10,
+                'webhook');
             });
           } else if (!err) {
             var entity = {

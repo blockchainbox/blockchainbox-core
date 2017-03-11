@@ -6,6 +6,7 @@ var Promise = require('bluebird');
 var contract = require('../models/contract.js');
 var contractFunction = require('../models/contractFunction.js');
 var contractEvent = require('../models/contractEvent.js');
+var account = require('../models/account.js');
 var ethereumController = require('../controllers/ethereumController.js');
 var contractController = require('../controllers/contractController.js');
 var sqsHelper = require('../helpers/aws/sqsHelper.js');
@@ -29,14 +30,39 @@ router.get('/compilers', function (req, res, next) {
  * POST deploy solidity contracts
  */
 router.post('/contracts', function (req, res, next) {
+    // TODO 這邊要加上 webhook 確認
+    var webhookUrl = '';
+    if (req.body.url !== undefined && req.body.url !== null && req.body.url !== '') {
+        webhookUrl = req.body.url;
+    }
     if (req.body.sourceCode !== undefined && req.body.sourceCode !== null && req.body.sourceCode !== '') {
     	var sourceCode = req.body.sourceCode;
-        contractController.deployContract(sourceCode).then(function(ids){
+        contractController.deployContract(sourceCode, webhookUrl).then(function(ids){
         	res.json({'data': {'contractId': ids}});
         })
     } else {
         console.log('error invalid source code!');
         res.json({'error': {'message': 'invalid source code'}});
+    }
+});
+
+router.post('/newAccount', function (req, res, next) {
+    var passphrase = '';
+    if (req.body.passphrase !== undefined && req.body.passphrase !== null && req.body.passphrase !== '') {
+        passphrase = req.body.passphrase;
+        var address = web3.personal.newAccount(passphrase);
+        // TODO save address & passphrase
+        var entity = {
+            'address': address,
+            'passphrase': passphrase    // hash
+        }
+        account.create(entity).then(function(result){
+            res.json({'data': {'address': address}});
+        }).catch(function(err){
+            res.json({'error': {'message': 'create failed'}});
+        });
+    } else {
+        res.json({'error': {'message': 'must give a passphrase'}});
     }
 });
 

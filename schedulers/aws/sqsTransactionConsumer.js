@@ -5,7 +5,7 @@ var contractController = require('../../controllers/contractController.js');
 var eventListener = require('../../helpers/eventListenerHelper.js');
 var web3 = new Web3();
 
-web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
+web3.setProvider(new web3.providers.HttpProvider(process.env.ENODE_BASE || 'http://localhost:8545'));
  
 AWS.config.update({
     apiVersion: '2012-11-05',

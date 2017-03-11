@@ -15,7 +15,8 @@ WebhookData.prototype.read = function(id) {
 };
 
 WebhookData.prototype.readByContractId = function(contractId) {
-	return pool.query('SELECT * FROM webhookdata WHERE contractId = $1 AND status = true', [contractId]);
+	return pool.query('SELECT * FROM webhookdata WHERE contractId = $1 AND contractFunctionId IS NULL'
+		+ ' AND contractEventId IS NULL AND status = true', [contractId]);
 }
 
 WebhookData.prototype.readByContractFunctionId = function(contractFunctionId) {
@@ -47,6 +48,14 @@ WebhookData.prototype.create = function(entity) {
 			+ ' AND url = $6) RETURNING id', 
 			[entity.contractId, entity.contractEventId, entity.url,
 			entity.contractId, entity.contractEventId, entity.url]);
+	} else if (entity.contractId) {
+		return pool.query('INSERT INTO webhookdata '
+	    	+ '(contractId, url, status, createTimestamp) '
+	    	+ ' SELECT $1, $2, true, now() '
+			+ ' WHERE NOT EXISTS ( '
+			+ ' SELECT 1 FROM webhookdata WHERE contractId = $3 AND contractEventId IS NULL '
+			+ ' AND contractFunctionId IS NULL AND url = $4) RETURNING id', 
+			[entity.contractId, entity.url, entity.contractId, entity.url]);
 	}
 };
 

@@ -322,6 +322,36 @@
                 }
             }
         },
+        "/eth/newAccount": {
+            "post": {
+                "summary": "Create new ethereum account",
+                "description": "Create a new ethereum account\n",
+                "tags": [
+                    "Ethereum"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/NewAccount"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
         "/eth/coinbase": {
             "get": {
                 "summary": "Ethereum coinbase",
@@ -655,6 +685,17 @@
                 "sourceCode": {
                     "type": "string",
                     "example": "contract ProofOfTransaction {bytes32 public dataHash;mapping (string => bytes32) dataHashMap;event setDataHashEvent(address from, string txHash, bytes32 dataHash, uint time);event getDataHashEvent(address from, string txHash, bytes32 dataHash, uint time);function setData(string txHash, string data) {dataHash = sha3(data);dataHashMap[txHash] = dataHash;setDataHashEvent(msg.sender, txHash, dataHash, now);}function getDataHash(string txHash) returns (bytes32) {dataHash = dataHashMap[txHash];getDataHashEvent(msg.sender, txHash, dataHash, now);if (dataHash == 0) {return \"\";} else {return dataHash;}}}"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "NewAccount": {
+            "type": "object",
+            "properties": {
+                "passphrase": {
+                    "type": "string"
                 }
             }
         }
