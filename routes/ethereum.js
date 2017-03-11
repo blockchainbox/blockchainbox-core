@@ -6,6 +6,7 @@ var Promise = require('bluebird');
 var contract = require('../models/contract.js');
 var contractFunction = require('../models/contractFunction.js');
 var contractEvent = require('../models/contractEvent.js');
+var account = require('../models/account.js');
 var ethereumController = require('../controllers/ethereumController.js');
 var contractController = require('../controllers/contractController.js');
 var sqsHelper = require('../helpers/aws/sqsHelper.js');
@@ -42,6 +43,26 @@ router.post('/contracts', function (req, res, next) {
     } else {
         console.log('error invalid source code!');
         res.json({'error': {'message': 'invalid source code'}});
+    }
+});
+
+router.post('/newAccount', function (req, res, next) {
+    var passphrase = '';
+    if (req.body.passphrase !== undefined && req.body.passphrase !== null && req.body.passphrase !== '') {
+        passphrase = req.body.passphrase;
+        var address = web3.personal.newAccount(passphrase);
+        // TODO save address & passphrase
+        var entity = {
+            'address': address,
+            'passphrase': passphrase    // hash
+        }
+        account.create(entity).then(function(result){
+            res.json({'data': {'address': address}});
+        }).catch(function(err){
+            res.json({'error': {'message': 'create failed'}});
+        });
+    } else {
+        res.json({'error': {'message': 'must give a passphrase'}});
     }
 });
 

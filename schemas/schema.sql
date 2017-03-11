@@ -88,3 +88,13 @@ CREATE TABLE IF NOT EXISTS WebhookData (
 
 ALTER TABLE WebhookData
   OWNER TO root;
+
+CREATE TABLE IF NOT EXISTS Account (
+	id serial primary key,
+	address text,
+	passphrase text,	-- hash
+	createTimestamp timestamp with time zone
+);
+
+ALTER TABLE Account
+  OWNER TO root;
