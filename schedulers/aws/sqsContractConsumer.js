@@ -25,6 +25,7 @@ var consumer = Consumer.create({
         var contractInstance = web3.eth.contract(contractAbi);
         var contractByteCode = '0x' + result.rows[0].bytecode;
         var gasEstimate = web3.eth.estimateGas({data: contractByteCode});
+        web3.personal.unlockAccount(web3.eth.coinbase, process.env.COINBASE_PASSWORD, 1000)
         contractInstance.new({
           from: web3.eth.coinbase,
           data: contractByteCode,  // TODO need confirm why this need '0x', and check contract is availble for use
