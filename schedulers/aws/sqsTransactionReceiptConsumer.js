@@ -7,6 +7,7 @@ var contractEvent = require('../../models/contractEvent.js');
 var transactionData = require('../../models/transactionData.js');
 var EventListenerHelper = require('../../helpers/eventListenerHelper.js');
 var sqsHelper = require('../../helpers/aws/sqsHelper.js');
+var requestHelper = require('../../helpers/requestHelper.js');
 var web3 = new Web3();
 
 web3.setProvider(new web3.providers.HttpProvider(process.env.ENODE_BASE || 'http://localhost:8545'));
@@ -22,12 +23,12 @@ var consumer = Consumer.create({
     queueUrl: process.env.AWS_TRANSACTION_RECEIPT_QUEUE_URL,
     handleMessage: function (message, done) {
         var data = JSON.parse(message.Body);
-        console.log(data.transactionHash);
+        console.log('[TRANSACTION RECEIPT] transactionHash: ' + data.transactionHash);
         var eventListener = new EventListenerHelper();
         eventListener.filterWatch(data.transactionHash, function(transactionInfo, transactionReceiptInfo, blockInfo) {
-            console.log('transaction info: ', transactionInfo);
-            console.log('transaction receipt info: ', transactionReceiptInfo);
-            console.log('block info: ', blockInfo);
+            console.log('[TRANSACTION RECEIPT] transaction info: ', transactionInfo);
+            console.log('[TRANSACTION RECEIPT] transaction receipt info: ', transactionReceiptInfo);
+            console.log('[TRANSACTION RECEIPT] block info: ', blockInfo);
             var txStatus = transactionData.CONFIRMED;
             if (transactionInfo.gas == transactionReceiptInfo.gasUsed) {
                 txStatus = transactionData.FAILED;
@@ -42,27 +43,32 @@ var consumer = Consumer.create({
                 "gas": transactionReceiptInfo.gasUsed
             };
 
-            transactionData.updateByTransactionHash(entity).then(function(result) {
-                console.log('[TRANSACTIONDATA UPDATE] Data mined, transactionHash: ' + data.transactionHash);
-                var message = {
-                    "contractId": data.contractId,
-                    "txHash": data.txHash,
-                    "transactionHash": data.transactionHash,
-                    "blockNumber": transactionInfo.blockNumber
-                }
-                sqsHelper.send(JSON.stringify(message),
-                    process.env.AWS_EVENT_QUEUE_URL, 10,
-                    'event');
-                var webhookMessage = {
-                    "contractFunctionId": data.contractFunctionId,
-                    "transactionHash": data.transactionHash
-                }
-                sqsHelper.send(JSON.stringify(webhookMessage),
-                    process.env.AWS_WEBHOOK_QUEUE_URL, 10,
-                    'webhook');
-            }).catch(function (err) {
-                console.log(err.message, err.stack);
-            });
+            if (data.contractId) {
+                transactionData.updateByTransactionHash(entity).then(function(result) {
+                    console.log('[TRANSACTIONDATA UPDATE] Data mined, transactionHash: ' + data.transactionHash);
+                    var message = {
+                        "contractId": data.contractId,
+                        "txHash": data.txHash,
+                        "transactionHash": data.transactionHash,
+                        "blockNumber": transactionInfo.blockNumber
+                    }
+                    sqsHelper.send(JSON.stringify(message),
+                        process.env.AWS_EVENT_QUEUE_URL, 10,
+                        'event');
+                    var webhookMessage = {
+                        "contractFunctionId": data.contractFunctionId,
+                        "transactionHash": data.transactionHash
+                    }
+                    sqsHelper.send(JSON.stringify(webhookMessage),
+                        process.env.AWS_WEBHOOK_QUEUE_URL, 10,
+                        'webhook');
+                }).catch(function (err) {
+                    console.log(err.message, err.stack);
+                });
+            } else if (data.webhook) {
+                console.log('[DIRECT MINED] Data mined, transactionHash: ' + data.transactionHash + ', webhook: ' + data.webhook);
+                requestHelper.post(data.webhook, transactionInfo);
+            }
         });
         done();
     },

@@ -46,6 +46,43 @@ router.post('/contracts', function (req, res, next) {
     }
 });
 
+/**
+ * POST using contract method
+ */
+router.post('/contractMethod', function (req, res, next) {
+    if (req.body.abi && req.body.address && req.body.method) {
+        var contractABI = JSON.parse(req.body.abi);
+        var contractAddress = req.body.address;
+        var method = req.body.method;
+        var data = [];
+        data = req.body.data;
+        var contractInstance = web3.eth.contract(contractABI).at(contractAddress);
+        var args = [];
+        data.forEach(function(param){
+            args.push(param);
+        });
+        args.push({from: web3.eth.coinbase, gas: 4700000});
+        var transactionHash = contractInstance[method].apply(this, args);
+        // only get transactionInfo by apply webhook url
+        if (req.body.webhook) {
+            var message = {
+                'transactionHash': transactionHash,
+                'webhook': req.body.webhook
+            }
+            sqsHelper.send(JSON.stringify(message), 
+                process.env.AWS_TRANSACTION_RECEIPT_QUEUE_URL, 10, 
+                'transactionReceipt');
+        }
+
+        res.json({'data': {'transactionHash': transactionHash}});
+    } else {
+        res.json({'error': {'message': 'invalid parameters'}});
+    }
+});
+
+/**
+ * POST create new ethereum account
+ */
 router.post('/newAccount', function (req, res, next) {
     var passphrase = '';
     if (req.body.passphrase !== undefined && req.body.passphrase !== null && req.body.passphrase !== '') {
