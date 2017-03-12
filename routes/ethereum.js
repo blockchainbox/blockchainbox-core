@@ -62,6 +62,7 @@ router.post('/contractMethod', function (req, res, next) {
             args.push(param);
         });
         args.push({from: web3.eth.coinbase, gas: 4700000});
+        web3.personal.unlockAccount(web3.eth.coinbase, process.env.COINBASE_PASSWORD, 1000);
         var transactionHash = contractInstance[method].apply(this, args);
         // only get transactionInfo by apply webhook url
         if (req.body.webhook) {
