@@ -11,7 +11,7 @@ var client = new elasticsearch.Client({
 });
 
 Block.prototype.get = function(id) {
-  return client.search({
+  return client.get({
     "index": index,
     "type": type,
     "id": id

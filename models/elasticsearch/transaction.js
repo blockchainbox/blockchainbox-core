@@ -7,9 +7,17 @@ const index = 'blockchainbox'
 const type = 'tx'
 
 var client = new elasticsearch.Client({
-  host: 'localhost:32780',
+  host: process.env.AWS_ELASTICSEARCH || 'localhost:32780',
   log: 'trace'
 });
+
+Transaction.prototype.get = function(id) {
+  return client.get({
+    "index": index,
+    "type": type,
+    "id": id
+  });
+};
 
 Transaction.prototype.search = function(query) {
   return client.search({
