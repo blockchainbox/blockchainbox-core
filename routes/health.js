@@ -20,6 +20,7 @@ router.get('/webhooks', function(req, res, next) {
 });
 
 router.get('/', function(req, res, next) {
+	// service, postgres, elasticsearch, ethereum
 	res.json({'status': 'OK'});
 });
 

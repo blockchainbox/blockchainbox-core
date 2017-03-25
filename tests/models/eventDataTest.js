@@ -1,4 +1,4 @@
-var eventData = require('../../models/eventData.js');
+var eventData = require('../../models/postgres/eventData.js');
 
 eventData.readAll().then(function(eventDataResult) {
 	console.log(eventDataResult.rowCount);
