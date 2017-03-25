@@ -1,7 +1,7 @@
 var Web3 = require('web3');
-var contract = require('../../models/contract.js');
-var contractEvent = require('../../models/contractEvent.js');
-var eventData = require('../../models/eventData.js');
+var contract = require('../../models/postgres/contract.js');
+var contractEvent = require('../../models/postgres/contractEvent.js');
+var eventData = require('../../models/postgres/eventData.js');
 var web3 = new Web3();
 
 web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));

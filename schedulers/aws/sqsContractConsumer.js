@@ -1,7 +1,7 @@
 var Consumer = require('sqs-consumer');
 var AWS = require('aws-sdk');
 var Web3 = require('web3');
-var contract = require('../../models/contract.js');
+var contract = require('../../models/postgres/contract.js');
 var sqsHelper = require('../../helpers/aws/sqsHelper.js');
 var web3 = new Web3();
 

@@ -1,11 +1,11 @@
 var Consumer = require('sqs-consumer');
 var AWS = require('aws-sdk');
-var webhookData = require('../../models/webhookData.js');
-var transactionData = require('../../models/transactionData.js');
-var contract = require('../../models/contract.js');
-var contractFunction = require('../../models/contractFunction.js');
-var contractEvent = require('../../models/contractEvent.js');
-var eventData = require('../../models/eventData.js');
+var webhookData = require('../../models/postgres/webhookData.js');
+var transactionData = require('../../models/postgres/transactionData.js');
+var contract = require('../../models/postgres/contract.js');
+var contractFunction = require('../../models/postgres/contractFunction.js');
+var contractEvent = require('../../models/postgres/contractEvent.js');
+var eventData = require('../../models/postgres/eventData.js');
 var requestHelper = require('../../helpers/requestHelper.js');
  
 AWS.config.update({

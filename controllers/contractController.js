@@ -4,9 +4,9 @@ var util = require('util');
 var Promise = require('bluebird');
 var contract = require('../models/contract.js');
 var contractEvent = require('../models/contractEvent.js');
-var contractFunction = require('../models/contractFunction.js');
-var transactionData = require('../models/transactionData.js');
-var webhookData = require('../models/webhookData.js');
+var contractFunction = require('../models/postgres/contractFunction.js');
+var transactionData = require('../models/postgres/transactionData.js');
+var webhookData = require('../models/postgres/webhookData.js');
 var sqsHelper = require('../helpers/aws/sqsHelper.js');
 
 var web3 = new Web3();

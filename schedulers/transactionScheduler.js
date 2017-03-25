@@ -1,4 +1,4 @@
-var transactionData = require('../models/transactionData.js');
+var transactionData = require('../models/postgres/transactionData.js');
 var sqsHelper = require('../helpers/aws/sqsHelper.js');
 var schedule = require('node-schedule');
 
