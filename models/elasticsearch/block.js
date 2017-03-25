@@ -6,7 +6,7 @@ const index = 'blockchainbox'
 const type = 'block'
 
 var client = new elasticsearch.Client({
-  host: 'localhost:32780',
+  host: process.env.AWS_ELASTICSEARCH || 'localhost:32780',
   log: 'trace'
 });
 
