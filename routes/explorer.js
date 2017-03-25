@@ -3,7 +3,9 @@ var router = express.Router();
 var block = require('../models/elasticsearch/block.js');
 var transaction = require('../models/elasticsearch/transaction.js');
 
-/* GET home page. */
+/**
+ * GET search block by block number
+ */
 router.get('/block', function(req, res, next) {
   block.get(req.query.blockNumber).then(function(blockInfo){
 	  if (blockInfo.found === true) {
@@ -16,6 +18,9 @@ router.get('/block', function(req, res, next) {
 	});
 });
 
+/**
+ * GET search address by transactionHash(tx)
+ */
 router.get('/address', function(req, res, next) {
   transaction.search(req.query.tx).then(function(addressInfo){
 	  var data = [];
@@ -32,6 +37,9 @@ router.get('/address', function(req, res, next) {
 	});
 });
 
+/**
+ * GET search transaction by transactionHash(tx)
+ */
 router.get('/transaction', function(req, res, next) {
   transaction.get(req.query.tx).then(function(transactionInfo){
 	  if (transactionInfo.found === true) {
