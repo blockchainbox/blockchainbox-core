@@ -10,6 +10,7 @@ var index = require('./routes/index');
 var ethereum = require('./routes/ethereum');
 var contract = require('./routes/contract');
 var health = require('./routes/health');
+var explorer = require('./routes/explorer');
 
 var app = express();
 var version = '/v1';
@@ -33,6 +34,7 @@ app.use('/swagger', express.static(path.join(__dirname, 'swagger')));
 app.use('/', index);
 // for rest APIs
 app.use(version + ethereumPath + '/contract', contract);
+app.use(version + ethereumPath + '/explorer', explorer);
 app.use(version + ethereumPath, ethereum);
 app.use(version + '/health', health);
 
