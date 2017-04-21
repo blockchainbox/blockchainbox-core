@@ -1,14 +1,11 @@
 swagger: '2.0'
 info:
   title: Blockchainbox API
-  description: Blockchain as a Service, API documents
-  version: "1.0.0"
-# the domain of the service
-host: localhost:3000
-# array of all schemes that your API supports
+  description: 'Blockchain as a Service, API documents'
+  version: 1.0.0
+host: 'localhost:3000'
 schemes:
   - http
-# will be prefixed to all paths
 basePath: /v1
 produces:
   - application/json
@@ -29,11 +26,11 @@ paths:
       tags:
         - Contract
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /eth/contract/events:
     get:
@@ -51,11 +48,11 @@ paths:
       tags:
         - Contract
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /eth/contract/functions:
     get:
@@ -73,24 +70,24 @@ paths:
       tags:
         - Contract
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /eth/contract/eventData:
     get:
       summary: Event data
       description: |
         Get contract event data
-      parameters: 
+      parameters:
         - name: txHash
           in: query
           description: txHash
           required: false
           type: string
-          default: 'e455bf8ea6e7463a1046a0b52804526e119b4bf5136279614e0b1e8e296a4e2d'
+          default: e455bf8ea6e7463a1046a0b52804526e119b4bf5136279614e0b1e8e296a4e2d
         - name: transactionHash
           in: query
           description: transactionHash
@@ -109,18 +106,18 @@ paths:
       tags:
         - Contract
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /eth/contract/transaction:
     post:
       summary: transaction data
       description: |
         Send transaction data
-      parameters: 
+      parameters:
         - name: body
           in: body
           required: true
@@ -129,24 +126,24 @@ paths:
       tags:
         - Contract
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /eth/contract/transactionData:
     get:
       summary: transaction data
-      description: | 
+      description: |
         Get transaction data
-      parameters: 
+      parameters:
         - name: txHash
           in: query
           description: txHash
           required: false
           type: string
-          default: 'e455bf8ea6e7463a1046a0b52804526e119b4bf5136279614e0b1e8e296a4e2d'
+          default: e455bf8ea6e7463a1046a0b52804526e119b4bf5136279614e0b1e8e296a4e2d
         - name: transactionHash
           in: query
           description: transactionHash
@@ -165,18 +162,18 @@ paths:
       tags:
         - Contract
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /eth/contract/webhooks:
     put:
       summary: create webhook on contract functions/events
       description: |
         Create webhook listen on contract functions/events
-      parameters: 
+      parameters:
         - name: body
           in: body
           required: true
@@ -185,11 +182,11 @@ paths:
       tags:
         - Contract
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /eth/compilers:
     get:
@@ -199,53 +196,53 @@ paths:
       tags:
         - Ethereum
       responses:
-        200:
+        '200':
           description: Success
           schema:
             $ref: '#/definitions/Compiler'
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /eth/contracts:
     post:
       summary: Deploy contract
       description: |
         Deploy contract to Ethereum
-      tags: 
+      tags:
         - Ethereum
-      parameters: 
+      parameters:
         - name: body
           in: body
           required: true
           schema:
             $ref: '#/definitions/SourceCode'
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /eth/newAccount:
     post:
       summary: Create new ethereum account
       description: |
         Create a new ethereum account
-      tags: 
+      tags:
         - Ethereum
-      parameters: 
+      parameters:
         - name: body
           in: body
           required: true
           schema:
             $ref: '#/definitions/NewAccount'
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /eth/coinbase:
     get:
@@ -255,11 +252,11 @@ paths:
       tags:
         - Ethereum
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /eth/balance:
     get:
@@ -268,18 +265,18 @@ paths:
         Get Ethereum account balance
       tags:
         - Ethereum
-      parameters: 
+      parameters:
         - name: address
           in: query
           description: address
           required: false
           type: string
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /eth/transactionReceipt:
     get:
@@ -288,7 +285,7 @@ paths:
         Get Ethereum transaction receipt
       tags:
         - Ethereum
-      parameters: 
+      parameters:
         - name: transactionHash
           in: query
           description: transactionHash
@@ -296,11 +293,11 @@ paths:
           type: string
           default: '0x271a4efee9782e6b18372a637aec0225fc6ce534a2eecd094fb5bf832a51b6df'
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /eth/estimateGas:
     get:
@@ -310,11 +307,11 @@ paths:
       tags:
         - Ethereum
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /eth/gasPrice:
     get:
@@ -324,11 +321,11 @@ paths:
       tags:
         - Ethereum
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /eth/blockNumber:
     get:
@@ -338,11 +335,11 @@ paths:
       tags:
         - Ethereum
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /eth/hashRate:
     get:
@@ -352,11 +349,11 @@ paths:
       tags:
         - Ethereum
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /eth/blockInfo:
     get:
@@ -365,18 +362,18 @@ paths:
         Get Ethereum block info
       tags:
         - Ethereum
-      parameters: 
+      parameters:
         - name: block
           in: query
           description: block number or block hash
           required: true
           type: string
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /eth/blockTransactionCount:
     get:
@@ -385,18 +382,118 @@ paths:
         Get Ethereum block transaction count
       tags:
         - Ethereum
-      parameters: 
+      parameters:
         - name: block
           in: query
           description: block number or string
           required: true
           type: string
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
+          description: Internal server error
+  /eth/explorer/block:
+    get:
+      summary: Search Ethereum block info
+      description: |
+        Search Ethereum block info
+      tags:
+        - Explorer
+      parameters:
+        - name: blockNumber
+          in: query
+          description: block number
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+  /eth/explorer/address:
+    get:
+      summary: Search Ethereum address by transaction hash
+      description: |
+        Search Ethereum address by transaction hash
+      tags:
+        - Explorer
+      parameters:
+        - name: tx
+          in: query
+          description: transaction hash
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+  /eth/explorer/transaction:
+    get:
+      summary: Search Ethereum transaction by transaction hash
+      description: |
+        Search Ethereum transaction by transaction hash
+      tags:
+        - Explorer
+      parameters:
+        - name: tx
+          in: query
+          description: transaction hash
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+  /eth/explorer/contract:
+    get:
+      summary: Search Ethereum contract info by contract address
+      description: |
+        Search Ethereum contract info by contract address
+      tags:
+        - Explorer
+      parameters:
+        - name: address
+          in: query
+          description: address
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+  /eth/explorer/event:
+    get:
+      summary: Search Ethereum contract event by contract address
+      description: |
+        Search Ethereum contract event by contract address
+      tags:
+        - Explorer
+      parameters:
+        - name: address
+          in: query
+          description: address
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad request
+        '500':
           description: Internal server error
   /health:
     get:
@@ -406,11 +503,11 @@ paths:
       tags:
         - Health
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
   /health/webhooks:
     get:
@@ -419,18 +516,18 @@ paths:
         Get response of webhook url
       tags:
         - Health
-      parameters: 
+      parameters:
         - name: url
           in: query
           description: webhook url
           required: true
           type: string
       responses:
-        200:
+        '200':
           description: Success
-        400:
+        '400':
           description: Bad request
-        500:
+        '500':
           description: Internal server error
 definitions:
   TransactionData:
@@ -449,8 +546,8 @@ definitions:
         items:
           type: string
         example:
-          - "foo"
-          - "bar"
+          - foo
+          - bar
   WebhookData:
     type: object
     properties:
@@ -473,14 +570,24 @@ definitions:
     properties:
       compiler:
         type: array
-        items: 
+        items:
           type: string
   SourceCode:
     type: object
     properties:
       sourceCode:
         type: string
-        example: 'contract ProofOfTransaction {bytes32 public dataHash;mapping (string => bytes32) dataHashMap;event setDataHashEvent(address from, string txHash, bytes32 dataHash, uint time);event getDataHashEvent(address from, string txHash, bytes32 dataHash, uint time);function setData(string txHash, string data) {dataHash = sha3(data);dataHashMap[txHash] = dataHash;setDataHashEvent(msg.sender, txHash, dataHash, now);}function getDataHash(string txHash) returns (bytes32) {dataHash = dataHashMap[txHash];getDataHashEvent(msg.sender, txHash, dataHash, now);if (dataHash == 0) {return "";} else {return dataHash;}}}'
+        example: >-
+          contract ProofOfTransaction {bytes32 public dataHash;mapping (string
+          => bytes32) dataHashMap;event setDataHashEvent(address from, string
+          txHash, bytes32 dataHash, uint time);event getDataHashEvent(address
+          from, string txHash, bytes32 dataHash, uint time);function
+          setData(string txHash, string data) {dataHash =
+          sha3(data);dataHashMap[txHash] = dataHash;setDataHashEvent(msg.sender,
+          txHash, dataHash, now);}function getDataHash(string txHash) returns
+          (bytes32) {dataHash = dataHashMap[txHash];getDataHashEvent(msg.sender,
+          txHash, dataHash, now);if (dataHash == 0) {return "";} else {return
+          dataHash;}}}
       url:
         type: string
   NewAccount:

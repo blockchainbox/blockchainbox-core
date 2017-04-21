@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var block = require('../models/elasticsearch/block.js');
 var transaction = require('../models/elasticsearch/transaction.js');
+var contract = require('../models/elasticsearch/contract.js');
 
 /**
  * GET search block by block number
@@ -44,6 +45,37 @@ router.get('/transaction', function(req, res, next) {
   transaction.get(req.query.tx).then(function(transactionInfo){
 	  if (transactionInfo.found === true) {
 	  	res.json({'data': transactionInfo._source})
+	  } else {
+	  	res.json({'error': {'code': 301, 'message': 'no data'}})
+	  }
+	}).catch(function(err){
+		res.json({'error': {'code': 302, 'message': 'search error'}})
+	})
+});
+
+/**
+ * GET search contract
+ */
+router.get('/contract', function(req, res, next) {
+	contract.get(req.query.address).then(function(contractInfo){
+	  if (contractInfo.found === true) {
+	  	res.json({'data': contractInfo._source})
+	  } else {
+	  	res.json({'error': {'code': 301, 'message': 'no data'}})
+	  }
+	}).catch(function(err){
+		res.json({'error': {'code': 302, 'message': 'search error'}})
+	})
+});
+
+/**
+ * GET search event
+ */
+router.get('/event', function(req, res, next) {
+	// transactionHash, contractAddress, eventName
+	event.get(req.query.address).then(function(eventInfo){
+	  if (eventInfo.found === true) {
+	  	res.json({'data': eventInfo._source})
 	  } else {
 	  	res.json({'error': {'code': 301, 'message': 'no data'}})
 	  }
