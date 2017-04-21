@@ -1,703 +1,848 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "title": "Blockchainbox API",
-        "description": "Blockchain as a Service, API documents",
-        "version": "1.0.0"
-    },
-    "host": "localhost:3000",
-    "schemes": [
-        "http"
-    ],
-    "basePath": "/v1",
-    "produces": [
-        "application/json"
-    ],
-    "paths": {
-        "/eth/contract": {
-            "get": {
-                "summary": "Contract Info",
-                "description": "Get contract info by contractId\n",
-                "parameters": [
-                    {
-                        "name": "contractId",
-                        "in": "query",
-                        "description": "Load by contractId.",
-                        "required": true,
-                        "type": "number",
-                        "format": "double",
-                        "default": 18
-                    }
-                ],
-                "tags": [
-                    "Contract"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/eth/contract/events": {
-            "get": {
-                "summary": "Contract Event Info",
-                "description": "Get contract event info by contract event id\n",
-                "parameters": [
-                    {
-                        "name": "contractEventId",
-                        "in": "query",
-                        "description": "Load by contractEventId.",
-                        "required": true,
-                        "type": "number",
-                        "format": "double",
-                        "default": 19
-                    }
-                ],
-                "tags": [
-                    "Contract"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/eth/contract/functions": {
-            "get": {
-                "summary": "Contract Function Info",
-                "description": "Get contract event info by contract function id\n",
-                "parameters": [
-                    {
-                        "name": "contractFunctionId",
-                        "in": "query",
-                        "description": "Load by contractFunctionId.",
-                        "required": true,
-                        "type": "number",
-                        "format": "double",
-                        "default": 18
-                    }
-                ],
-                "tags": [
-                    "Contract"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/eth/contract/eventData": {
-            "get": {
-                "summary": "Event data",
-                "description": "Get contract event data\n",
-                "parameters": [
-                    {
-                        "name": "txHash",
-                        "in": "query",
-                        "description": "txHash",
-                        "required": false,
-                        "type": "string",
-                        "default": "e455bf8ea6e7463a1046a0b52804526e119b4bf5136279614e0b1e8e296a4e2d"
-                    },
-                    {
-                        "name": "transactionHash",
-                        "in": "query",
-                        "description": "transactionHash",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "contractId",
-                        "in": "query",
-                        "description": "contract id",
-                        "required": false,
-                        "type": "integer"
-                    },
-                    {
-                        "name": "contractEventId",
-                        "in": "query",
-                        "description": "contract event id",
-                        "required": false,
-                        "type": "integer"
-                    }
-                ],
-                "tags": [
-                    "Contract"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/eth/contract/transaction": {
-            "post": {
-                "summary": "transaction data",
-                "description": "Send transaction data\n",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/TransactionData"
-                        }
-                    }
-                ],
-                "tags": [
-                    "Contract"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/eth/contract/transactionData": {
-            "get": {
-                "summary": "transaction data",
-                "description": "Get transaction data\n",
-                "parameters": [
-                    {
-                        "name": "txHash",
-                        "in": "query",
-                        "description": "txHash",
-                        "required": false,
-                        "type": "string",
-                        "default": "e455bf8ea6e7463a1046a0b52804526e119b4bf5136279614e0b1e8e296a4e2d"
-                    },
-                    {
-                        "name": "transactionHash",
-                        "in": "query",
-                        "description": "transactionHash",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "contractId",
-                        "in": "query",
-                        "description": "contract id",
-                        "required": false,
-                        "type": "integer"
-                    },
-                    {
-                        "name": "contractFunctionId",
-                        "in": "query",
-                        "description": "contract function id",
-                        "required": false,
-                        "type": "integer"
-                    }
-                ],
-                "tags": [
-                    "Contract"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/eth/contract/webhooks": {
-            "put": {
-                "summary": "create webhook on contract functions/events",
-                "description": "Create webhook listen on contract functions/events\n",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/WebhookData"
-                        }
-                    }
-                ],
-                "tags": [
-                    "Contract"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/eth/compilers": {
-            "get": {
-                "summary": "Ethereum compilers",
-                "description": "Get Ethereum compilers\n",
-                "tags": [
-                    "Ethereum"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "schema": {
-                            "$ref": "#/definitions/Compiler"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/eth/contracts": {
-            "post": {
-                "summary": "Deploy contract",
-                "description": "Deploy contract to Ethereum\n",
-                "tags": [
-                    "Ethereum"
-                ],
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/SourceCode"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/eth/newAccount": {
-            "post": {
-                "summary": "Create new ethereum account",
-                "description": "Create a new ethereum account\n",
-                "tags": [
-                    "Ethereum"
-                ],
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/NewAccount"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/eth/coinbase": {
-            "get": {
-                "summary": "Ethereum coinbase",
-                "description": "Get Ethereum coinbase\n",
-                "tags": [
-                    "Ethereum"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/eth/balance": {
-            "get": {
-                "summary": "Ethereum account balance",
-                "description": "Get Ethereum account balance\n",
-                "tags": [
-                    "Ethereum"
-                ],
-                "parameters": [
-                    {
-                        "name": "address",
-                        "in": "query",
-                        "description": "address",
-                        "required": false,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/eth/transactionReceipt": {
-            "get": {
-                "summary": "Ethereum transaction receipt",
-                "description": "Get Ethereum transaction receipt\n",
-                "tags": [
-                    "Ethereum"
-                ],
-                "parameters": [
-                    {
-                        "name": "transactionHash",
-                        "in": "query",
-                        "description": "transactionHash",
-                        "required": true,
-                        "type": "string",
-                        "default": "0x271a4efee9782e6b18372a637aec0225fc6ce534a2eecd094fb5bf832a51b6df"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/eth/estimateGas": {
-            "get": {
-                "summary": "Ethereum estimate gas",
-                "description": "Get Ethereum estimate gas\n",
-                "tags": [
-                    "Ethereum"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/eth/gasPrice": {
-            "get": {
-                "summary": "Ethereum gas price",
-                "description": "Get Ethereum gas price\n",
-                "tags": [
-                    "Ethereum"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/eth/blockNumber": {
-            "get": {
-                "summary": "Ethereum block number",
-                "description": "Get Ethereum block number\n",
-                "tags": [
-                    "Ethereum"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/eth/hashRate": {
-            "get": {
-                "summary": "Ethereum hash rate",
-                "description": "Get Ethereum hash rate\n",
-                "tags": [
-                    "Ethereum"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/eth/blockInfo": {
-            "get": {
-                "summary": "Ethereum block info",
-                "description": "Get Ethereum block info\n",
-                "tags": [
-                    "Ethereum"
-                ],
-                "parameters": [
-                    {
-                        "name": "block",
-                        "in": "query",
-                        "description": "block number or block hash",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/eth/blockTransactionCount": {
-            "get": {
-                "summary": "Ethereum block transaction count",
-                "description": "Get Ethereum block transaction count\n",
-                "tags": [
-                    "Ethereum"
-                ],
-                "parameters": [
-                    {
-                        "name": "block",
-                        "in": "query",
-                        "description": "block number or string",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/health": {
-            "get": {
-                "summary": "Blockchainbox service health check",
-                "description": "Get health of Blockchainbox\n",
-                "tags": [
-                    "Health"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
-        },
-        "/health/webhooks": {
-            "get": {
-                "summary": "Check webhook response",
-                "description": "Get response of webhook url\n",
-                "tags": [
-                    "Health"
-                ],
-                "parameters": [
-                    {
-                        "name": "url",
-                        "in": "query",
-                        "description": "webhook url",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                }
-            }
+  "swagger": "2.0",
+  "info": {
+    "title": "Blockchainbox API",
+    "description": "Blockchain as a Service, API documents",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/v1",
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/eth/contract": {
+      "get": {
+        "summary": "Contract Info",
+        "description": "Get contract info by contractId\n",
+        "parameters": [
+          {
+            "name": "contractId",
+            "in": "query",
+            "description": "Load by contractId.",
+            "required": true,
+            "type": "number",
+            "format": "double",
+            "default": 18
+          }
+        ],
+        "tags": [
+          "Contract"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
         }
+      }
     },
-    "definitions": {
-        "TransactionData": {
-            "type": "object",
-            "properties": {
-                "contractId": {
-                    "type": "integer",
-                    "format": "int32",
-                    "example": 18
-                },
-                "contractFunctionId": {
-                    "type": "integer",
-                    "format": "int32",
-                    "example": 18
-                },
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    },
-                    "example": [
-                        "foo",
-                        "bar"
-                    ]
-                }
-            }
-        },
-        "WebhookData": {
-            "type": "object",
-            "properties": {
-                "contractId": {
-                    "type": "integer",
-                    "format": "int32",
-                    "example": 18
-                },
-                "contractFunctionId": {
-                    "type": "integer",
-                    "format": "int32"
-                },
-                "contractEventId": {
-                    "type": "integer",
-                    "format": "int32",
-                    "example": 19
-                },
-                "url": {
-                    "type": "string",
-                    "example": "http://www.example.com"
-                }
-            }
-        },
-        "Compiler": {
-            "type": "object",
-            "properties": {
-                "compiler": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "SourceCode": {
-            "type": "object",
-            "properties": {
-                "sourceCode": {
-                    "type": "string",
-                    "example": "contract ProofOfTransaction {bytes32 public dataHash;mapping (string => bytes32) dataHashMap;event setDataHashEvent(address from, string txHash, bytes32 dataHash, uint time);event getDataHashEvent(address from, string txHash, bytes32 dataHash, uint time);function setData(string txHash, string data) {dataHash = sha3(data);dataHashMap[txHash] = dataHash;setDataHashEvent(msg.sender, txHash, dataHash, now);}function getDataHash(string txHash) returns (bytes32) {dataHash = dataHashMap[txHash];getDataHashEvent(msg.sender, txHash, dataHash, now);if (dataHash == 0) {return \"\";} else {return dataHash;}}}"
-                },
-                "url": {
-                    "type": "string"
-                }
-            }
-        },
-        "NewAccount": {
-            "type": "object",
-            "properties": {
-                "passphrase": {
-                    "type": "string"
-                }
-            }
+    "/eth/contract/events": {
+      "get": {
+        "summary": "Contract Event Info",
+        "description": "Get contract event info by contract event id\n",
+        "parameters": [
+          {
+            "name": "contractEventId",
+            "in": "query",
+            "description": "Load by contractEventId.",
+            "required": true,
+            "type": "number",
+            "format": "double",
+            "default": 19
+          }
+        ],
+        "tags": [
+          "Contract"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
         }
+      }
+    },
+    "/eth/contract/functions": {
+      "get": {
+        "summary": "Contract Function Info",
+        "description": "Get contract event info by contract function id\n",
+        "parameters": [
+          {
+            "name": "contractFunctionId",
+            "in": "query",
+            "description": "Load by contractFunctionId.",
+            "required": true,
+            "type": "number",
+            "format": "double",
+            "default": 18
+          }
+        ],
+        "tags": [
+          "Contract"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/contract/eventData": {
+      "get": {
+        "summary": "Event data",
+        "description": "Get contract event data\n",
+        "parameters": [
+          {
+            "name": "txHash",
+            "in": "query",
+            "description": "txHash",
+            "required": false,
+            "type": "string",
+            "default": "e455bf8ea6e7463a1046a0b52804526e119b4bf5136279614e0b1e8e296a4e2d"
+          },
+          {
+            "name": "transactionHash",
+            "in": "query",
+            "description": "transactionHash",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "contractId",
+            "in": "query",
+            "description": "contract id",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "contractEventId",
+            "in": "query",
+            "description": "contract event id",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "tags": [
+          "Contract"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/contract/transaction": {
+      "post": {
+        "summary": "transaction data",
+        "description": "Send transaction data\n",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TransactionData"
+            }
+          }
+        ],
+        "tags": [
+          "Contract"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/contract/transactionData": {
+      "get": {
+        "summary": "transaction data",
+        "description": "Get transaction data\n",
+        "parameters": [
+          {
+            "name": "txHash",
+            "in": "query",
+            "description": "txHash",
+            "required": false,
+            "type": "string",
+            "default": "e455bf8ea6e7463a1046a0b52804526e119b4bf5136279614e0b1e8e296a4e2d"
+          },
+          {
+            "name": "transactionHash",
+            "in": "query",
+            "description": "transactionHash",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "contractId",
+            "in": "query",
+            "description": "contract id",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "contractFunctionId",
+            "in": "query",
+            "description": "contract function id",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "tags": [
+          "Contract"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/contract/webhooks": {
+      "put": {
+        "summary": "create webhook on contract functions/events",
+        "description": "Create webhook listen on contract functions/events\n",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/WebhookData"
+            }
+          }
+        ],
+        "tags": [
+          "Contract"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/compilers": {
+      "get": {
+        "summary": "Ethereum compilers",
+        "description": "Get Ethereum compilers\n",
+        "tags": [
+          "Ethereum"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Compiler"
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/contracts": {
+      "post": {
+        "summary": "Deploy contract",
+        "description": "Deploy contract to Ethereum\n",
+        "tags": [
+          "Ethereum"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SourceCode"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/newAccount": {
+      "post": {
+        "summary": "Create new ethereum account",
+        "description": "Create a new ethereum account\n",
+        "tags": [
+          "Ethereum"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewAccount"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/coinbase": {
+      "get": {
+        "summary": "Ethereum coinbase",
+        "description": "Get Ethereum coinbase\n",
+        "tags": [
+          "Ethereum"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/balance": {
+      "get": {
+        "summary": "Ethereum account balance",
+        "description": "Get Ethereum account balance\n",
+        "tags": [
+          "Ethereum"
+        ],
+        "parameters": [
+          {
+            "name": "address",
+            "in": "query",
+            "description": "address",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/transactionReceipt": {
+      "get": {
+        "summary": "Ethereum transaction receipt",
+        "description": "Get Ethereum transaction receipt\n",
+        "tags": [
+          "Ethereum"
+        ],
+        "parameters": [
+          {
+            "name": "transactionHash",
+            "in": "query",
+            "description": "transactionHash",
+            "required": true,
+            "type": "string",
+            "default": "0x271a4efee9782e6b18372a637aec0225fc6ce534a2eecd094fb5bf832a51b6df"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/estimateGas": {
+      "get": {
+        "summary": "Ethereum estimate gas",
+        "description": "Get Ethereum estimate gas\n",
+        "tags": [
+          "Ethereum"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/gasPrice": {
+      "get": {
+        "summary": "Ethereum gas price",
+        "description": "Get Ethereum gas price\n",
+        "tags": [
+          "Ethereum"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/blockNumber": {
+      "get": {
+        "summary": "Ethereum block number",
+        "description": "Get Ethereum block number\n",
+        "tags": [
+          "Ethereum"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/hashRate": {
+      "get": {
+        "summary": "Ethereum hash rate",
+        "description": "Get Ethereum hash rate\n",
+        "tags": [
+          "Ethereum"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/blockInfo": {
+      "get": {
+        "summary": "Ethereum block info",
+        "description": "Get Ethereum block info\n",
+        "tags": [
+          "Ethereum"
+        ],
+        "parameters": [
+          {
+            "name": "block",
+            "in": "query",
+            "description": "block number or block hash",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/blockTransactionCount": {
+      "get": {
+        "summary": "Ethereum block transaction count",
+        "description": "Get Ethereum block transaction count\n",
+        "tags": [
+          "Ethereum"
+        ],
+        "parameters": [
+          {
+            "name": "block",
+            "in": "query",
+            "description": "block number or string",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/explorer/block": {
+      "get": {
+        "summary": "Search Ethereum block info",
+        "description": "Search Ethereum block info\n",
+        "tags": [
+          "Explorer"
+        ],
+        "parameters": [
+          {
+            "name": "blockNumber",
+            "in": "query",
+            "description": "block number",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/explorer/address": {
+      "get": {
+        "summary": "Search Ethereum address by transaction hash",
+        "description": "Search Ethereum address by transaction hash\n",
+        "tags": [
+          "Explorer"
+        ],
+        "parameters": [
+          {
+            "name": "tx",
+            "in": "query",
+            "description": "transaction hash",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/explorer/transaction": {
+      "get": {
+        "summary": "Search Ethereum transaction by transaction hash",
+        "description": "Search Ethereum transaction by transaction hash\n",
+        "tags": [
+          "Explorer"
+        ],
+        "parameters": [
+          {
+            "name": "tx",
+            "in": "query",
+            "description": "transaction hash",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/explorer/contract": {
+      "get": {
+        "summary": "Search Ethereum contract info by contract address",
+        "description": "Search Ethereum contract info by contract address\n",
+        "tags": [
+          "Explorer"
+        ],
+        "parameters": [
+          {
+            "name": "address",
+            "in": "query",
+            "description": "address",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/eth/explorer/event": {
+      "get": {
+        "summary": "Search Ethereum contract event by contract address",
+        "description": "Search Ethereum contract event by contract address\n",
+        "tags": [
+          "Explorer"
+        ],
+        "parameters": [
+          {
+            "name": "address",
+            "in": "query",
+            "description": "address",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Blockchainbox service health check",
+        "description": "Get health of Blockchainbox\n",
+        "tags": [
+          "Health"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/health/webhooks": {
+      "get": {
+        "summary": "Check webhook response",
+        "description": "Get response of webhook url\n",
+        "tags": [
+          "Health"
+        ],
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "description": "webhook url",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
     }
+  },
+  "definitions": {
+    "TransactionData": {
+      "type": "object",
+      "properties": {
+        "contractId": {
+          "type": "integer",
+          "format": "int32",
+          "example": 18
+        },
+        "contractFunctionId": {
+          "type": "integer",
+          "format": "int32",
+          "example": 18
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "foo",
+            "bar"
+          ]
+        }
+      }
+    },
+    "WebhookData": {
+      "type": "object",
+      "properties": {
+        "contractId": {
+          "type": "integer",
+          "format": "int32",
+          "example": 18
+        },
+        "contractFunctionId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "contractEventId": {
+          "type": "integer",
+          "format": "int32",
+          "example": 19
+        },
+        "url": {
+          "type": "string",
+          "example": "http://www.example.com"
+        }
+      }
+    },
+    "Compiler": {
+      "type": "object",
+      "properties": {
+        "compiler": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "SourceCode": {
+      "type": "object",
+      "properties": {
+        "sourceCode": {
+          "type": "string",
+          "example": "contract ProofOfTransaction {bytes32 public dataHash;mapping (string => bytes32) dataHashMap;event setDataHashEvent(address from, string txHash, bytes32 dataHash, uint time);event getDataHashEvent(address from, string txHash, bytes32 dataHash, uint time);function setData(string txHash, string data) {dataHash = sha3(data);dataHashMap[txHash] = dataHash;setDataHashEvent(msg.sender, txHash, dataHash, now);}function getDataHash(string txHash) returns (bytes32) {dataHash = dataHashMap[txHash];getDataHashEvent(msg.sender, txHash, dataHash, now);if (dataHash == 0) {return \"\";} else {return dataHash;}}}"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "NewAccount": {
+      "type": "object",
+      "properties": {
+        "passphrase": {
+          "type": "string"
+        }
+      }
+    }
+  }
 }
