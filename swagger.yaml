@@ -224,7 +224,7 @@ paths:
           description: Bad request
         '500':
           description: Internal server error
-  /eth/newAccount:
+  /eth/newAddress:
     post:
       summary: Create new ethereum account
       description: |
@@ -236,7 +236,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/NewAccount'
+            $ref: '#/definitions/NewAddress'
       responses:
         '200':
           description: Success
@@ -495,6 +495,26 @@ paths:
           description: Bad request
         '500':
           description: Internal server error
+  /account/create:
+    post:
+      summary: Create new account and address
+      description: |
+        Create new account and address
+      tags:
+        - Account
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NewAccount'
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
   /health:
     get:
       summary: Blockchainbox service health check
@@ -591,6 +611,13 @@ definitions:
       url:
         type: string
   NewAccount:
+    type: object
+    properties:
+      account:
+        type: string
+      password:
+        type: string
+  NewAddress:
     type: object
     properties:
       passphrase:
