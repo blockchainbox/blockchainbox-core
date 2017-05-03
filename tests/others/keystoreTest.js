@@ -1,6 +1,6 @@
 var fs = require('fs');
 
-var fileDir = '/Users/phyrextsai/Library/Ethereum/keystore'
+var fileDir = process.env.KEYSTORE_PATH;
 fs.readdir(fileDir, 'utf8', function(err, files) {
 	if (err) console.log(err);
   files.forEach(function(file) {
