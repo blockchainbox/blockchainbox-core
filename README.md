@@ -11,7 +11,7 @@ Blockchainbox 已將所有的應用服務與功能封裝，提供 Swagger UI，�
 - Support authentication service
   - Support create system account and genereate accesstoken
   - Support export keystore
-
+  - Configurable Ethereum keystore path
 
 ### v0.2.2
 - Support create new ethereum account
