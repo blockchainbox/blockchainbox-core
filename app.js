@@ -11,6 +11,7 @@ var ethereum = require('./routes/ethereum');
 var contract = require('./routes/contract');
 var health = require('./routes/health');
 var explorer = require('./routes/explorer');
+var account = require('./routes/account');
 
 var app = express();
 var version = '/v1';
@@ -37,6 +38,7 @@ app.use(version + ethereumPath + '/contract', contract);
 app.use(version + ethereumPath + '/explorer', explorer);
 app.use(version + ethereumPath, ethereum);
 app.use(version + '/health', health);
+app.use(version + '/account', account)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

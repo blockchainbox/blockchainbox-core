@@ -6,7 +6,7 @@ var Promise = require('bluebird');
 var contract = require('../models/postgres/contract.js');
 var contractFunction = require('../models/postgres/contractFunction.js');
 var contractEvent = require('../models/postgres/contractEvent.js');
-var account = require('../models/postgres/account.js');
+var address = require('../models/postgres/address.js');
 var ethereumController = require('../controllers/ethereumController.js');
 var contractController = require('../controllers/contractController.js');
 var sqsHelper = require('../helpers/aws/sqsHelper.js');
@@ -83,8 +83,9 @@ router.post('/contractMethod', function (req, res, next) {
 
 /**
  * POST create new ethereum account
+ * TODO bind account, need choose which account you will bind
  */
-router.post('/newAccount', function (req, res, next) {
+router.post('/newAddress', function (req, res, next) {
     var passphrase = '';
     if (req.body.passphrase !== undefined && req.body.passphrase !== null && req.body.passphrase !== '') {
         passphrase = req.body.passphrase;
@@ -94,7 +95,7 @@ router.post('/newAccount', function (req, res, next) {
             'address': address,
             'passphrase': passphrase    // hash
         }
-        account.create(entity).then(function(result){
+        address.create(entity).then(function(result){
             res.json({'data': {'address': address}});
         }).catch(function(err){
             res.json({'error': {'message': 'create failed'}});
