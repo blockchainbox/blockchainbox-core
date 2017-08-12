@@ -2,6 +2,8 @@ var Consumer = require('sqs-consumer');
 var AWS = require('aws-sdk');
 var Web3 = require('web3');
 var contract = require('../../models/postgres/contract.js');
+var contractElasticSearch = require('../../models/elasticsearch/contract.js');
+var transactionElasticSearch = require('../../models/elasticsearch/transaction.js');
 var sqsHelper = require('../../helpers/aws/sqsHelper.js');
 var web3 = new Web3();
 
@@ -13,6 +15,8 @@ AWS.config.update({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     region: process.env.AWS_REGION
 });
+
+
  
 var consumer = Consumer.create({
   queueUrl: process.env.AWS_CONTRACT_QUEUE_URL,
@@ -45,6 +49,15 @@ var consumer = Consumer.create({
               sqsHelper.send(JSON.stringify(webhookMessage),
                 process.env.AWS_WEBHOOK_QUEUE_URL, 10,
                 'webhook');
+              var contractInfo = {
+                "contractAbi": contractAbi,
+                "contractByteCode": '0x' + result.rows[0].bytecode,
+                "transactionHash": instance.transactionHash
+              };
+              contractElasticSearch.create(
+                instance.address, 
+                contractInfo
+              });
             });
           } else if (!err) {
             var entity = {

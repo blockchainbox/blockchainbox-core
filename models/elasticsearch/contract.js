@@ -40,7 +40,7 @@ Contract.prototype.create = function(id, data) {
     "index": index,
     "type": type,
     "id": id,
-    "body": {"contract": data}
+    "body": data
   });
 };
 

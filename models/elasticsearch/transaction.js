@@ -41,7 +41,7 @@ Transaction.prototype.create = function(id, data) {
     "index": index,
     "type": type,
     "id": id,
-    "body": {"transactionInfo": data}
+    "body": data
   });
 };
 

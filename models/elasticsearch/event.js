@@ -40,7 +40,7 @@ Event.prototype.create = function(id, data) {
     "index": index,
     "type": type,
     "id": id,
-    "body": {"event": data}
+    "body": data
   });
 };
 
