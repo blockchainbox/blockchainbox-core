@@ -40,7 +40,7 @@ Block.prototype.create = function(id, data) {
     "index": index,
     "type": type,
     "id": id,
-    "body": {"blockInfo": data}
+    "body": data
   });
 };
 

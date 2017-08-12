@@ -5,6 +5,7 @@ var contract = require('../../models/postgres/contract.js');
 var contractEvent = require('../../models/postgres/contractEvent.js');
 var eventData = require('../../models/postgres/eventData.js');
 var sqsHelper = require('../../helpers/aws/sqsHelper.js');
+var eventElasticSearch = require('../../models/elasticsearch/event.js');
 var web3 = new Web3();
 
 web3.setProvider(new web3.providers.HttpProvider(process.env.ENODE_BASE || 'http://localhost:8545'));
@@ -58,6 +59,7 @@ var consumer = Consumer.create({
 										sqsHelper.send(JSON.stringify(message),
 						                    process.env.AWS_WEBHOOK_QUEUE_URL, 10,
 						                    'webhook');
+										eventElasticSearch.exists(eventInfo.address);
 									}).catch(function(err) {
 										console.log('[EVENTDATA] CREATE failed', err);
 									});

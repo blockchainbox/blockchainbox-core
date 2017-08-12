@@ -8,6 +8,7 @@ var transactionData = require('../../models/postgres/transactionData.js');
 var EventListenerHelper = require('../../helpers/eventListenerHelper.js');
 var sqsHelper = require('../../helpers/aws/sqsHelper.js');
 var requestHelper = require('../../helpers/requestHelper.js');
+var transactionElasticSearch = require('../../models/elasticsearch/transaction.js');
 var web3 = new Web3();
 
 web3.setProvider(new web3.providers.HttpProvider(process.env.ENODE_BASE || 'http://localhost:8545'));
@@ -62,6 +63,10 @@ var consumer = Consumer.create({
                     sqsHelper.send(JSON.stringify(webhookMessage),
                         process.env.AWS_WEBHOOK_QUEUE_URL, 10,
                         'webhook');
+                    transactionElasticSearch.create(
+                        data.transactionHash,
+                        entity
+                    });
                 }).catch(function (err) {
                     console.log(err.message, err.stack);
                 });
