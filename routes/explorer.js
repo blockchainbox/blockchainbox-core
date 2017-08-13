@@ -3,6 +3,8 @@ var router = express.Router();
 var block = require('../models/elasticsearch/block.js');
 var transaction = require('../models/elasticsearch/transaction.js');
 var contract = require('../models/elasticsearch/contract.js');
+var event = require('../models/elasticsearch/event.js');
+var address = require('../models/elasticsearch/address.js');
 
 /**
  * GET search block by block number
@@ -23,7 +25,16 @@ router.get('/block', function(req, res, next) {
  * GET search address by transactionHash(tx)
  */
 router.get('/address', function(req, res, next) {
-  transaction.search(req.query.tx).then(function(addressInfo){
+	address.get(req.query.address).then(function(addressInfo) {
+		if (addressInfo.found === true) {
+	  	res.json({'data': addressInfo._source})
+	  } else {
+	  	res.json({'error': {'code': 301, 'message': 'no data'}})
+	  }
+	}).catch(function(err){
+		res.json({'error': {'code': 302, 'message': 'search error'}})
+	});
+  /*transaction.search(req.query.tx).then(function(addressInfo){
 	  var data = [];
 	  if (addressInfo.hits.total > 0) {
 	  	addressInfo.hits.hits.forEach(function(source) {
@@ -35,7 +46,7 @@ router.get('/address', function(req, res, next) {
 	  }
   }).catch(function(err){
 		res.json({'error': {'code': 302, 'message': 'search error'}})
-	});
+	});*/
 });
 
 /**

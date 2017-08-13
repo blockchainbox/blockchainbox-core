@@ -9,6 +9,7 @@ var EventListenerHelper = require('../../helpers/eventListenerHelper.js');
 var sqsHelper = require('../../helpers/aws/sqsHelper.js');
 var requestHelper = require('../../helpers/requestHelper.js');
 var transactionElasticSearch = require('../../models/elasticsearch/transaction.js');
+var addressElasticSearch = require('../../models/elasticsearch/address.js');
 var web3 = new Web3();
 
 web3.setProvider(new web3.providers.HttpProvider(process.env.ENODE_BASE || 'http://localhost:8545'));
@@ -26,6 +27,15 @@ const addTransaction = async (id, data) => {
     console.log("[EXPLORER TRANSACTION CREATE]", body);
   } catch (err) {
     console.log("[EXPLORER TRANSACTION ERROR]", err);
+  }
+}
+
+const addAddress = async (id, data) => {
+  try {
+    const body = await addressElasticSearch.update(id, data);
+    console.log("[EXPLORER ADDRESS CREATE]", body);
+  } catch (err) {
+    console.log("[EXPLORER ADDRESS ERROR]", err);
   }
 }
  
@@ -50,9 +60,12 @@ var consumer = Consumer.create({
                 "blockNumber": transactionInfo.blockNumber,
                 "blockHash": transactionInfo.blockHash,
                 "fromAddress": transactionInfo.from,
-                "gas": transactionReceiptInfo.gasUsed
+                "gas": transactionReceiptInfo.gasUsed,
+                "transactionInfo": transactionInfo,
+                "transactionReceiptInfo": transactionReceiptInfo
             };
             addTransaction(data.transactionHash, entity);
+            addAddress(data.transactionInfo.from, transactionReceiptInfo)
             if (data.contractId) {
                 transactionData.updateByTransactionHash(entity).then(function(result) {
                     console.log('[TRANSACTIONDATA UPDATE] Data mined, transactionHash: ' + data.transactionHash);
