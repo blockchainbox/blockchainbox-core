@@ -59,7 +59,7 @@ var consumer = Consumer.create({
 										sqsHelper.send(JSON.stringify(message),
 						                    process.env.AWS_WEBHOOK_QUEUE_URL, 10,
 						                    'webhook');
-										eventElasticSearch.exists(eventInfo.address);
+										eventElasticSearch.update(eventInfo.address, entity);
 									}).catch(function(err) {
 										console.log('[EVENTDATA] CREATE failed', err);
 									});

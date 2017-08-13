@@ -1,0 +1,4 @@
+sudo apt-get install npm
+sudo npm install pm2 -g
+pm2 logs blockchainbox-core --lines 100
+pm2 monit
