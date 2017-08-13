@@ -71,6 +71,12 @@ var consumer = Consumer.create({
             contract.updateTransactionHash(entity).then(function(result){
               console.log('[CONTRACT UPDATE] Before Contract Mined, id: ' + data.contractId + ', transactionHash: ' + instance.transactionHash);
             });
+            var transactionReceiptMessage = {
+              "transactionHash": transactionHash
+            };
+            sqsHelper.send(JSON.stringify(transactionReceiptMessage),
+              process.env.AWS_TRANSACTION_RECEIPT_QUEUE_URL
+              'transactionreceipt');
           }
         });
       }

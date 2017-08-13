@@ -52,7 +52,7 @@ var consumer = Consumer.create({
                 "fromAddress": transactionInfo.from,
                 "gas": transactionReceiptInfo.gasUsed
             };
-
+            addTransaction(data.transactionHash, entity);
             if (data.contractId) {
                 transactionData.updateByTransactionHash(entity).then(function(result) {
                     console.log('[TRANSACTIONDATA UPDATE] Data mined, transactionHash: ' + data.transactionHash);
@@ -72,7 +72,6 @@ var consumer = Consumer.create({
                     sqsHelper.send(JSON.stringify(webhookMessage),
                         process.env.AWS_WEBHOOK_QUEUE_URL, 10,
                         'webhook');
-                    addTransaction(data.transactionHash, entity);
                 }).catch(function (err) {
                     console.log(err.message, err.stack);
                 });
