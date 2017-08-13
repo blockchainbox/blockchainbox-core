@@ -63,7 +63,7 @@ var consumer = Consumer.create({
                     sqsHelper.send(JSON.stringify(webhookMessage),
                         process.env.AWS_WEBHOOK_QUEUE_URL, 10,
                         'webhook');
-                    transactionElasticSearch.create(
+                    transactionElasticSearch.update(
                         data.transactionHash,
                         entity
                     });

@@ -27,12 +27,37 @@ Event.prototype.search = function(query) {
 };
 
 Event.prototype.update = function(id, partial) {
-  return client.update({
+  return client.exists({
     "index": index,
     "type": type,
-    "id": id,
-    "body": partial
-  });
+    "id": id
+  }).then(function(result) {
+    console.log(result);
+    if (result == true) {
+      console.log(partial);
+      return client.update({
+        "index": index,
+        "type": type,
+        "id": id,
+        "body": {
+          "script": {
+            "lang": "painless",
+            "inline": "ctx._source.events.add(params.events)",
+            "params": {
+              "events": partial
+            }
+          }
+        }
+      });
+    } else {
+      return client.create({
+        "index": index,
+        "type": type,
+        "id": id,
+        "body": {events: [partial]}
+      });
+    }
+  })
 };
 
 Event.prototype.create = function(id, data) {

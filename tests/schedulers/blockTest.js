@@ -2,6 +2,7 @@ var Web3 = require('web3');
 var web3 = new Web3();
 var BigNumber = require('bignumber.js');
 var elasticsearch = require('elasticsearch');
+var blockElasticSearch = require('../../models/elasticsearch/block.js');
 
 web3.setProvider(new web3.providers.HttpProvider(process.env.ENODE_BASE || 'https://ropsten.infura.io/YJ5zuNbAkmYQY3kFn4cZ'));
 

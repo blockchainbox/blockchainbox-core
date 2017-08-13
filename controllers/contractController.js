@@ -42,7 +42,7 @@ ContractController.prototype.deployContract = function(sourceCode, webhookUrl) {
 		                	"url": webhookUrl
 		                }
 		                webhookData.create(entity).then(function(result) {
-		                	console.log('[CONTRACT WEBHOOK CREATE] contractId: ' + contractid + ", webhookUrl: " + webhookUrl);
+		                	console.log('[CONTRACT WEBHOOK CREATE] contractId: ' + contractId + ", webhookUrl: " + webhookUrl);
 		                });
 		            }
 	                var message = {
