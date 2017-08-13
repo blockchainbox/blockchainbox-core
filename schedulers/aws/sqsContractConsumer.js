@@ -75,7 +75,7 @@ var consumer = Consumer.create({
               "transactionHash": transactionHash
             };
             sqsHelper.send(JSON.stringify(transactionReceiptMessage),
-              process.env.AWS_TRANSACTION_RECEIPT_QUEUE_URL
+              process.env.AWS_TRANSACTION_RECEIPT_QUEUE_URL, 10,
               'transactionreceipt');
           }
         });
