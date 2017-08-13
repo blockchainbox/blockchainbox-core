@@ -72,7 +72,7 @@ var consumer = Consumer.create({
               console.log('[CONTRACT UPDATE] Before Contract Mined, id: ' + data.contractId + ', transactionHash: ' + instance.transactionHash);
             });
             var transactionReceiptMessage = {
-              "transactionHash": transactionHash
+              "transactionHash": instance.transactionHash
             };
             sqsHelper.send(JSON.stringify(transactionReceiptMessage),
               process.env.AWS_TRANSACTION_RECEIPT_QUEUE_URL, 10,
