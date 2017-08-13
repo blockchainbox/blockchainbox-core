@@ -22,9 +22,10 @@ AWS.config.update({
 
 const addTransaction = async (id, data) => {
   try {
-    await transactionElasticSearch.update(id, data);
+    const body = await transactionElasticSearch.update(id, data);
+    console.log("[EXPLORER TRANSACTION CREATE]", body);
   } catch (err) {
-    console.log(err);
+    console.log("[EXPLORER TRANSACTION ERROR]", err);
   }
 }
  

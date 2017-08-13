@@ -19,9 +19,10 @@ AWS.config.update({
 
 const addEvent = async (id, data) => {
   try {
-    await eventElasticSearch.update(id, data);
+    const body = await eventElasticSearch.update(id, data);
+    console.log("[EXPLORER EVENT CREATE]", body);
   } catch (err) {
-    console.log(err);
+    console.log("[EXPLORER EVENT ERROR]", err);
   }
 }
  
