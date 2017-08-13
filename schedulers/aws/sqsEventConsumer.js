@@ -16,6 +16,14 @@ AWS.config.update({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     region: process.env.AWS_REGION
 });
+
+const addEvent = async (id, data) => {
+  try {
+    await eventElasticSearch.update(id, data);
+  } catch (err) {
+    console.log(err);
+  }
+}
  
 var consumer = Consumer.create({
 	queueUrl: process.env.AWS_EVENT_QUEUE_URL,
@@ -59,7 +67,7 @@ var consumer = Consumer.create({
 										sqsHelper.send(JSON.stringify(message),
 						                    process.env.AWS_WEBHOOK_QUEUE_URL, 10,
 						                    'webhook');
-										eventElasticSearch.update(eventInfo.address, entity);
+										addEvent(eventInfo.address, entity);
 									}).catch(function(err) {
 										console.log('[EVENTDATA] CREATE failed', err);
 									});

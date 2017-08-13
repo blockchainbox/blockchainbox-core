@@ -16,7 +16,13 @@ AWS.config.update({
     region: process.env.AWS_REGION
 });
 
-
+const addContract = async (id, data) => {
+  try {
+    await contractElasticSearch.create(id, data);
+  } catch (err) {
+    console.log(err);
+  }
+}
  
 var consumer = Consumer.create({
   queueUrl: process.env.AWS_CONTRACT_QUEUE_URL,
@@ -54,10 +60,7 @@ var consumer = Consumer.create({
                 "contractByteCode": '0x' + result.rows[0].bytecode,
                 "transactionHash": instance.transactionHash
               };
-              contractElasticSearch.create(
-                instance.address, 
-                contractInfo
-              });
+              addContract(instance.address, contractInfo);
             });
           } else if (!err) {
             var entity = {
