@@ -24,6 +24,15 @@ const addContract = async (id, data) => {
     console.log("[EXPLORER CONTRACT ERROR]", err);
   }
 }
+
+const addAddress = async (id, data) => {
+  try {
+    const body = await addressElasticSearch.update(id, data);
+    console.log("[EXPLORER ADDRESS CREATE]", body);
+  } catch (err) {
+    console.log("[EXPLORER ADDRESS ERROR]", err);
+  }
+}
  
 var consumer = Consumer.create({
   queueUrl: process.env.AWS_CONTRACT_QUEUE_URL,

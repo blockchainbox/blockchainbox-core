@@ -600,16 +600,16 @@
     },
     "/eth/explorer/address": {
       "get": {
-        "summary": "Search Ethereum address by transaction hash",
-        "description": "Search Ethereum address by transaction hash\n",
+        "summary": "Search Ethereum address",
+        "description": "Search Ethereum address\n",
         "tags": [
           "Explorer"
         ],
         "parameters": [
           {
-            "name": "tx",
+            "name": "address",
             "in": "query",
-            "description": "transaction hash",
+            "description": "address",
             "required": true,
             "type": "string"
           }
