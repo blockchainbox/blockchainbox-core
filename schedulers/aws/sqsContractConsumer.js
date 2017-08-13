@@ -18,9 +18,10 @@ AWS.config.update({
 
 const addContract = async (id, data) => {
   try {
-    await contractElasticSearch.create(id, data);
+    const body = await contractElasticSearch.create(id, data);
+    console.log("[EXPLORER CONTRACT CREATE]", body);
   } catch (err) {
-    console.log(err);
+    console.log("[EXPLORER CONTRACT ERROR]", err);
   }
 }
  
@@ -57,7 +58,7 @@ var consumer = Consumer.create({
                 'webhook');
               var contractInfo = {
                 "contractAbi": contractAbi,
-                "contractByteCode": '0x' + result.rows[0].bytecode,
+                "contractByteCode": '0x' + contractByteCode,
                 "transactionHash": instance.transactionHash
               };
               addContract(instance.address, contractInfo);
