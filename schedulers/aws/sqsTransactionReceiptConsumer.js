@@ -19,6 +19,14 @@ AWS.config.update({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     region: process.env.AWS_REGION
 });
+
+const addTransaction = async (id, data) => {
+  try {
+    await transactionElasticSearch.update(id, data);
+  } catch (err) {
+    console.log(err);
+  }
+}
  
 var consumer = Consumer.create({
     queueUrl: process.env.AWS_TRANSACTION_RECEIPT_QUEUE_URL,
@@ -63,10 +71,7 @@ var consumer = Consumer.create({
                     sqsHelper.send(JSON.stringify(webhookMessage),
                         process.env.AWS_WEBHOOK_QUEUE_URL, 10,
                         'webhook');
-                    transactionElasticSearch.update(
-                        data.transactionHash,
-                        entity
-                    });
+                    addTransaction(data.transactionHash, entity);
                 }).catch(function (err) {
                     console.log(err.message, err.stack);
                 });
