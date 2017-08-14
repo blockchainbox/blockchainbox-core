@@ -7,6 +7,15 @@ Blockchainbox 已將所有的應用服務與功能封裝，提供 Swagger UI，�
 
 ## Important changes
 
+### v0.4
+- Support explorer service
+  - Support contract explorer
+  - Support address explorer
+  - Support transaction explorer
+  - Support event explorer
+  - Support block explorer
+- Fix bugs
+
 ### v0.3
 - Support authentication service
   - Support create system account and genereate accesstoken

@@ -1,0 +1,2 @@
+txHash等同transactionData的id
+transactionHash才是真正Ethereum上交易的資訊
