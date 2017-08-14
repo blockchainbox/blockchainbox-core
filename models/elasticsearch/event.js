@@ -26,7 +26,7 @@ Event.prototype.search = function(query) {
   });
 };
 
-Event.prototype.update = function(id, partial) {
+Event.prototype.update = function(id, eventId, partial) {
   return client.exists({
     "index": index,
     "type": type,
@@ -34,19 +34,12 @@ Event.prototype.update = function(id, partial) {
   }).then(function(result) {
     console.log(result);
     if (result == true) {
-      console.log(partial);
       return client.update({
         "index": index,
         "type": type,
         "id": id,
         "body": {
-          "script": {
-            "lang": "painless",
-            "inline": "ctx._source.events.add(params.events)",
-            "params": {
-              "events": partial
-            }
-          }
+          "script" : "ctx._source[\"" + eventId + "\"] = '" + JSON.stringify(partial) + "'"
         }
       });
     } else {
@@ -54,7 +47,7 @@ Event.prototype.update = function(id, partial) {
         "index": index,
         "type": type,
         "id": id,
-        "body": {events: [partial]}
+        "body": {[eventId]: JSON.stringify(partial)}
       });
     }
   })
