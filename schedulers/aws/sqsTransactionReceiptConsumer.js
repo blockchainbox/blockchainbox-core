@@ -65,7 +65,7 @@ var consumer = Consumer.create({
                 "transactionReceiptInfo": transactionReceiptInfo
             };
             addTransaction(data.transactionHash, entity);
-            addAddress(data.transactionInfo.from, transactionReceiptInfo)
+            addAddress(transactionInfo.from, transactionReceiptInfo);
             if (data.contractId) {
                 transactionData.updateByTransactionHash(entity).then(function(result) {
                     console.log('[TRANSACTIONDATA UPDATE] Data mined, transactionHash: ' + data.transactionHash);

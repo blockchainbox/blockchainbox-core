@@ -54,7 +54,7 @@ Event.prototype.update = function(id, partial) {
         "index": index,
         "type": type,
         "id": id,
-        "body": {events: [partial]}
+        "body": {transactionHash: [partial]}
       });
     }
   })
