@@ -30,9 +30,9 @@ const addTransaction = async (id, data) => {
   }
 }
 
-const addAddress = async (id, data) => {
+const addAddress = async (id, transactionHash, data) => {
   try {
-    const body = await addressElasticSearch.update(id, data);
+    const body = await addressElasticSearch.update(id, transactionHash, data);
     console.log("[EXPLORER ADDRESS CREATE]", body);
   } catch (err) {
     console.log("[EXPLORER ADDRESS ERROR]", err);
@@ -65,7 +65,7 @@ var consumer = Consumer.create({
                 "transactionReceiptInfo": transactionReceiptInfo
             };
             addTransaction(data.transactionHash, entity);
-            addAddress(transactionInfo.from, transactionReceiptInfo);
+            addAddress(transactionInfo.from, data.transactionHash, transactionReceiptInfo);
             if (data.contractId) {
                 transactionData.updateByTransactionHash(entity).then(function(result) {
                     console.log('[TRANSACTIONDATA UPDATE] Data mined, transactionHash: ' + data.transactionHash);

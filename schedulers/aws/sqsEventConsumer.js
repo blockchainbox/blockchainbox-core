@@ -17,9 +17,9 @@ AWS.config.update({
     region: process.env.AWS_REGION
 });
 
-const addEvent = async (id, data) => {
+const addEvent = async (id, eventId, data) => {
   try {
-    const body = await eventElasticSearch.update(id, data);
+    const body = await eventElasticSearch.update(id, eventId, data);
     console.log("[EXPLORER EVENT CREATE]", body);
   } catch (err) {
     console.log("[EXPLORER EVENT ERROR]", err);
@@ -68,7 +68,7 @@ var consumer = Consumer.create({
 										sqsHelper.send(JSON.stringify(message),
 						                    process.env.AWS_WEBHOOK_QUEUE_URL, 10,
 						                    'webhook');
-										addEvent(eventInfo.address, entity);
+										addEvent(eventInfo.address, eventArray[eventInfo.event], entity);
 									}).catch(function(err) {
 										console.log('[EVENTDATA] CREATE failed', err);
 									});

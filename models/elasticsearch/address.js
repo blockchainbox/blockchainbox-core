@@ -1,6 +1,6 @@
 var elasticsearch = require('elasticsearch');
 
-function Event() {}
+function Address() {}
 
 const index = 'blockchainbox'
 const type = 'address'
@@ -10,7 +10,7 @@ var client = new elasticsearch.Client({
   log: 'trace'
 });
 
-Event.prototype.get = function(id) {
+Address.prototype.get = function(id) {
   return client.get({
     "index": index,
     "type": type,
@@ -18,7 +18,7 @@ Event.prototype.get = function(id) {
   });
 };
 
-Event.prototype.search = function(query) {
+Address.prototype.search = function(query) {
   return client.search({
     "index": index,
     "type": type,
@@ -26,27 +26,19 @@ Event.prototype.search = function(query) {
   });
 };
 
-Event.prototype.update = function(id, partial) {
+Address.prototype.update = function(id, transactionHash, partial) {
   return client.exists({
     "index": index,
     "type": type,
     "id": id
   }).then(function(result) {
-    console.log(result);
     if (result == true) {
-      console.log(partial);
       return client.update({
         "index": index,
         "type": type,
         "id": id,
         "body": {
-          "script": {
-            "lang": "painless",
-            "inline": "ctx._source.transactionHash.add(params.transactionHash)",
-            "params": {
-              "transactionHash": partial
-            }
-          }
+          "script" : "ctx._source[\"" + transactionHash + "\"] = '" + JSON.stringify(partial) + "'"
         }
       });
     } else {
@@ -54,13 +46,13 @@ Event.prototype.update = function(id, partial) {
         "index": index,
         "type": type,
         "id": id,
-        "body": {transactionHash: [partial]}
+        "body": {[transactionHash]: JSON.stringify(partial)}
       });
     }
   })
 };
 
-Event.prototype.create = function(id, data) {
+Address.prototype.create = function(id, data) {
   return client.create({
     "index": index,
     "type": type,
@@ -69,7 +61,7 @@ Event.prototype.create = function(id, data) {
   });
 };
 
-Event.prototype.delete = function(id) {
+Address.prototype.delete = function(id) {
   return client.delete({
     "index": index,
     "type": type,
@@ -77,7 +69,7 @@ Event.prototype.delete = function(id) {
   })
 };
 
-Event.prototype.exists = function(id) {
+Address.prototype.exists = function(id) {
   return client.exists({
     "index": index,
     "type": type,
@@ -85,11 +77,11 @@ Event.prototype.exists = function(id) {
   });
 };
 
-Event.prototype.count = function() {
+Address.prototype.count = function() {
   return client.count({
     "index": index,
     "type": type
   });
 }
 
-exports = module.exports = new Event();
+exports = module.exports = new Address();
